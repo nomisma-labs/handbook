@@ -2,13 +2,15 @@
 
 1. **Purpose.** Nomisma Labs is a development space for a new generation of trading platforms. The goal is to build a software workshop: reusable components, tools, and practices for constructing a family of trading systems that meet different business and technical requirements.
 
-2. **Relation to other trading platforms.** The Nomisma platform is inspired by our experience with earlier crypto trading platforms, Napoleon and Axiom. Nomisma does not reuse source code from either platform.
+2. **Relation to other trading platforms.** The Nomisma platform is inspired by experience with an earlier crypto trading platform, Napoleon. Nomisma does not reuse its source code.
 
 3. **System composition.** Each reusable component is developed in a separate repository, with its boundaries shaped by the needs of future systems. Each trading system will have a repository that brings together the components required for its use case. For example, an HFT system may require a dedicated performance testing framework, while a mid-frequency system may not. Separate component repositories support different combinations, access rights, licenses, and release cycles without keeping all projects in one monorepo.
 
 4. **Development and distribution.** Components will have a private development version under a proprietary license, with the full development and agent tooling, skills, internal documentation, comprehensive tests, and CI/CD. Where distributed, a public or client version will carry an appropriate open-source or commercial license, with reduced documentation, test coverage, and CI/CD suited to its audience. Components intended solely for internal tooling, such as `cmake_template`, will remain private.
 
 5. **Dependencies.** Repositories will depend on one another through Git submodules and explicit build-system dependencies. Shared components such as [toml_config](https://github.com/nomisma-labs/toml_config), the configuration library based on TOML, and `logger` will support many repositories; each system repository will assemble a compatible set of component versions.
+
+6. **Packaging and Distribution.** Nomisma Labs provides means for various types of packaging and distribution. Initially, we will support the following options: source-level distribution, pre-built libraries and binaries for a certain platform, Python "wheel" packages. Please see [packaging.md](master_plan/wip/packaging.md).
 
 ## Decisions
 
