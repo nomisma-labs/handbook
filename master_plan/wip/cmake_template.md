@@ -50,14 +50,14 @@ Use these as references for individual improvements within the existing template
 ## Recommended next work
 
 A **shared-dependency check** covers, for example, a trading app using both `orders` and `market_data`,
-which each depend on `config`: `app → orders → config` and `app → market_data → config`.
-This shape is called a dependency *diamond*. Both paths must use one agreed version of `config`.
-A **local source override** means using a developer's local `config` checkout to test changes
+which each depend on `toml_config`: `app → orders → toml_config` and `app → market_data → toml_config`.
+This shape is called a dependency *diamond*. Both paths must use one agreed version of `toml_config`.
+A **local source override** means using a developer's local `toml_config` checkout to test changes
 before updating the committed dependency revision.
 
 | Priority | Improvement | Done when |
 |---|---|---|
-| 1 | **Test shared dependencies and local overrides.** | The top-level project selects one `config` revision for both paths; it is configured once; a local checkout can replace it; dependency tests/apps stay off by default. Declare shared dependencies with consistent names before `FetchContent_MakeAvailable` ([ordering rules](https://cmake.org/cmake/help/latest/module/FetchContent.html)). |
+| 1 | **Test shared dependencies and local overrides.** | The top-level project selects one `toml_config` revision for both paths; it is configured once; a local checkout can replace it; dependency tests/apps stay off by default. Declare shared dependencies with consistent names before `FetchContent_MakeAvailable` ([ordering rules](https://cmake.org/cmake/help/latest/module/FetchContent.html)). |
 | 1 | **Strengthen library usage integration tests.** | Extend the existing native-module source/package consumers and installed executable relocation check: move a library installation to a different directory, then build/run an importing consumer with the original source/build trees unavailable. Required dependencies and exported targets work through both source and package consumption. |
 | 1 | **Test the full initialization/update workflow.** | Initialize a renamed repo, add a small library/app, then build/test/install. Apply a template update: preserve project files, report conflicts, keep removed template examples out, and record the matching `.template_ref`. Applying the same update again changes nothing. Follow the [sync instructions](../../../cmake_template/docs/new_repo.md#keeping-repos-in-sync), including staging `.template_ref`. |
 | 1, when needed | **Support private dependency checkout.** | Before adding the first private dependency, provide GitHub App token support in template-owned workflows and verify recursive checkout with read-only access to the required repos. |

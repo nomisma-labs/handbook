@@ -8,7 +8,7 @@
 
 4. **Development and distribution.** Components will have a private development version under a proprietary license, with the full development and agent tooling, skills, internal documentation, comprehensive tests, and CI/CD. Where distributed, a public or client version will carry an appropriate open-source or commercial license, with reduced documentation, test coverage, and CI/CD suited to its audience. Components intended solely for internal tooling, such as `cmake_template`, will remain private.
 
-5. **Dependencies.** Repositories will depend on one another through Git submodules and explicit build-system dependencies. Shared components such as `config` and `logger` will support many repositories; each system repository will assemble a compatible set of component versions.
+5. **Dependencies.** Repositories will depend on one another through Git submodules and explicit build-system dependencies. Shared components such as [toml_config](https://github.com/nomisma-labs/toml_config), the configuration library based on TOML, and `logger` will support many repositories; each system repository will assemble a compatible set of component versions.
 
 ## Decisions
 

@@ -1,4 +1,4 @@
-# Foundation layer: cmake_template → assembly → config → logger
+# Foundation layer: Build template, Integration Framework, Config Library, Logger
 
 Updated 2026-10-04.
 
@@ -11,10 +11,10 @@ Each step should build, pass its tests, and provide the foundation needed by the
 
 | Repository | Role | Current work |
 |---|---|---|
-| `cmake_template` | Shared CMake infrastructure, repository skeleton and feature lab | Module-first implementation is committed; documentation review and the next release remain. |
-| `assembly` | Node/context composition, bidirectional relay and callable delegates | Framework extraction and teaching tests are under review; native-module migration follows the template update. |
-| `config` | Runtime configuration generator and C++ integration | Planned after Assembly. |
-| `logger` | Shared logging services and macro interface | Planned after Config; uses Config and Assembly. |
+| [cmake_template](https://github.com/nomisma-labs/cmake_template) | Build template repo : shared CMake infrastructure, repository skeleton and feature lab | C++20 module-first implementation is committed; documentation review and the next release remain. |
+| [assembly](https://github.com/nomisma-labs/assembly) | Integration framework: Node/context composition, bidirectional relay and callable delegates | Framework extraction and illustrative tests; native-module migration follows the template update. |
+| [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library based on TOML | Defines **tcfg** language and app config workflows and instrumentation |
+| [trace_logger](https://github.com/nomisma-labs/trace_logger) | High performance logging services and macro interface | Created, early stage |
 
 Each trading system has a container repository that selects compatible component versions.
 The [template backlog](wip/cmake_template.md) lists proposed improvements; they are introduced
@@ -59,7 +59,7 @@ Every repo starts versioned at `0.1.0`, follows Semantic Versioning, and keeps i
 `project()`. Annotated `vX.Y.Z` tags identify releases on `master`; CI checks tag/version agreement.
 The [release procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/build.md#versioning) is maintained in the template.
 
-## 4. cmake_template
+## 4. Build Template
 
 The template supplies the shared kit, presets, checks, CI, agent guidance and recipes. It also
 serves as the lab for features that will affect other repositories. Its native `nom.example`
@@ -82,7 +82,7 @@ Current local validation and remaining experiments are recorded in the
 [lab](https://github.com/nomisma-labs/cmake_template/blob/master/docs/lab/README.md); the [backlog](wip/cmake_template.md) tracks
 infrastructure work beyond the implemented baseline.
 
-## 5. Assembly
+## 5. Assembly : Integration Framework
 
 Assembly composes processing nodes at compile time. Relay passes requests forward and responses
 back through matching handlers; context mixins contribute shared state and services. Delegates
@@ -102,22 +102,25 @@ Remaining work:
 - Validate on GCC and Clang, including source/package consumers and installed Metal headers.
 - Release the library once the reviewed framework and integration checks pass.
 
-## 6. Config
+## 6. App Config
 
-Configuration has two parts: a Python generator that assembles runtime JSON from shared pieces,
-includes, overlays and environment variables; and a C++ interface for mapping it onto types.
-The `DEFINE_CONFIG` macros stay in a header; reusable types and services use modules. Validate
-the JSON dependency boundary for that macro integration.
+[toml_config](https://github.com/nomisma-labs/toml_config) is the application configuration
+library based on TOML. The repository has been initialized from `cmake_template`; configuration
+APIs, tooling and tests are still to be added.
 
-Apps and components depend on Config when they need it; Assembly remains independent. This step
-also exercises a tool run at build time, configuration installation, and CI access to a private
-component dependency.
+Planned work has two parts: a Python tool that assembles runtime configuration from shared
+pieces, includes, overlays and environment variables; and a C++ interface for mapping TOML
+settings onto types. Configuration macros stay in headers; reusable types and services use
+modules. Validate the TOML parser dependency boundary for that integration.
+
+Apps and components depend on `toml_config` when they need it; Assembly remains independent.
+This step also exercises a tool run at build time, configuration installation, and CI access
+to a private component dependency.
 
 ## 7. Logger
 
 Logger provides levels, logging macros and runtime-configured file loggers. Its types and
-services use modules; macros stay in headers. It builds on Config for settings and Assembly for
-relay integration, while remaining separate from application lifecycle management.
+services use C++20 modules; macros stay in headers.
 
 ## 8. Hosting, CI and documentation
 
