@@ -12,7 +12,7 @@
 
 ## Decisions
 
-- **License:** private repositories start under a proprietary license, with `LICENSE` at the root. Copyright belongs to Alexey Tkachenko until transferred to Nomisma Labs. Distribution licenses are chosen per component.
+- **License:** private repositories start under a proprietary license, with `LICENSE` at the root. Copyright belongs to Alexey Tkachenko until transferred to Nomisma Labs. Distribution licenses are chosen per component. Public repositories will have an open source license (TBD).
 - **SPDX:** every private Nomisma source file carries `SPDX-FileCopyrightText: 2026 Alexey Tkachenko` and `SPDX-License-Identifier: LicenseRef-Nomisma-Labs-Proprietary`.
 - **Hosting:** GitHub organization, private repositories by default, GitHub Actions for CI/CD; start on the Free plan.
 - **Language:** module-first C++, using the latest stable standard supported by the project toolchain. Use `nom` as the root namespace, component namespaces where useful, and standard-library-style `snake_case` naming.
