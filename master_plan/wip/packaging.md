@@ -59,7 +59,7 @@ The initial fixture is implemented locally: scikit-build-core drives CMake, the 
 helper installs an extension and declared runtime libraries, and tests exercise source-built
 and imported libraries from installed wheels. Packaging tools use a separate pinned environment.
 Repository initialization removes the example and retains reusable support. Operational
-instructions live in the [template build guide](https://github.com/nomisma-labs/cmake_template/blob/master/docs/build.md#native-python-wheels).
+instructions live in the [template build guide](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md#native-python-wheels).
 
 ## Compatibility and audiences
 

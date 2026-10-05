@@ -31,8 +31,8 @@ implementation units. Apps and tests import the library's primary module. Macros
 third-party dependencies use a tested module wrapper or header boundary. Each file includes the
 standard-library headers it uses; `import std;` remains a toolchain investigation.
 
-The canonical [conventions](https://github.com/nomisma-labs/cmake_template/blob/master/docs/conventions.md) define naming, file layout,
-target names and enforcement. The [module rules](https://github.com/nomisma-labs/cmake_template/blob/master/docs/build.md#modules)
+The canonical [conventions](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/conventions.md) define naming, file layout,
+target names and enforcement. The [module rules](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md#modules)
 cover composition and dependency boundaries. Every source file carries the SPDX comments from
 the memorandum.
 
@@ -51,13 +51,13 @@ the memorandum.
 - Keep shared infrastructure changes in `cmake_template`, then synchronize derived repos.
   Each repo records its template revision in `.template_ref`.
 
-The [build guide](https://github.com/nomisma-labs/cmake_template/blob/master/docs/build.md) covers presets, dependency integration,
+The [build guide](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md) covers presets, dependency integration,
 installation and tooling. Use `./bootstrap.sh` for fresh validation and preset build/test commands
 for incremental work.
 
 Every repo starts versioned at `0.1.0`, follows Semantic Versioning, and keeps its version in
 `project()`. Annotated `vX.Y.Z` tags identify releases on `master`; CI checks tag/version agreement.
-The [release procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/build.md#versioning) is maintained in the template.
+The [release procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md#versioning) is maintained in the template.
 
 ## 4. Build Template
 
@@ -67,12 +67,12 @@ module demonstrates partitions, template definitions, implementation units, a ma
 private JSON integration. Importing tests cover source and installed-package consumption;
 other integration checks cover app selection and installation relocation.
 
-Create repositories with the [new-repo procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/new_repo.md).
+Create repositories with the [new-repo procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/new_repo.md).
 The initializer removes the example and lab, leaving an empty repository that grows through
-[code recipes](https://github.com/nomisma-labs/cmake_template/blob/master/docs/howto.md). Repository settings and private dependency
+[code recipes](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/howto.md). Repository settings and private dependency
 access need their own setup.
 
-For updates, follow the [sync procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/new_repo.md#keeping-repos-in-sync).
+For updates, follow the [sync procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/new_repo.md#keeping-repos-in-sync).
 It transfers shared infrastructure from committed template revisions. A composition change also
 requires migrating each repo's own code, tests and CMake declarations; coordinate those changes
 with the sync and validate source and package consumption together.
@@ -144,7 +144,7 @@ conventions and recipes, and update relevant documentation alongside code change
 
 C++23 is the current validated baseline. Presets already use GCC 16 and Clang 19; development and
 CI target Ubuntu 26.04 with Ninja. Exact versions, including GCC's development-snapshot status,
-are recorded in the [toolchain guide](https://github.com/nomisma-labs/cmake_template/blob/master/docs/build.md#toolchain) and
+are recorded in the [toolchain guide](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md#toolchain) and
 [CI image](https://github.com/nomisma-labs/cmake_template/blob/master/docker/ci/Dockerfile).
 
 Validate compiler or standard upgrades in the lab before changing the shared baseline.
