@@ -1,6 +1,6 @@
 # Foundation layer: Build template, Integration Framework, Config Library, Logger
 
-Updated 2026-10-04.
+Updated 2026-10-08.
 
 The [memorandum](../memorandum.md) records intent and platform decisions. This roadmap tracks
 implementation order and remaining work; operational guidance lives in the component repos.
@@ -13,7 +13,7 @@ Each step should build, pass its tests, and provide the foundation needed by the
 |---|---|---|
 | [cmake_template](https://github.com/nomisma-labs/cmake_template) | Build template repo : shared CMake infrastructure, repository skeleton and feature lab | C++20 module-first implementation is committed; documentation review and the next release remain. |
 | [assembly](https://github.com/nomisma-labs/assembly) | Integration framework: Node/context composition, bidirectional relay and callable delegates | Framework extraction and illustrative tests; native-module migration follows the template update. |
-| [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library based on TOML | Defines **tcfg** language and app config workflows and instrumentation |
+| [json_config](https://github.com/nomisma-labs/json_config), [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library with JSON and TOML implementations | Shared design and similar capabilities for layered configuration, tools and C++ integration |
 | [trace_logger](https://github.com/nomisma-labs/trace_logger) | High performance logging services and macro interface | Created, early stage |
 
 Each trading system has a container repository that selects compatible component versions.
@@ -104,16 +104,19 @@ Remaining work:
 
 ## 6. App Config
 
-[toml_config](https://github.com/nomisma-labs/toml_config) is the application configuration
-library based on TOML. The repository has been initialized from `cmake_template`; configuration
-APIs, tooling and tests are still to be added.
+The application configuration library has two implementations:
+[json_config](https://github.com/nomisma-labs/json_config) based on JSON and
+[toml_config](https://github.com/nomisma-labs/toml_config) based on TOML. They share the same
+design and are intended to provide similar capabilities.
 
-Planned work has two parts: a Python tool that assembles runtime configuration from shared
-pieces, includes, overlays and environment variables; and a C++ interface for mapping TOML
-settings onto types. Configuration macros stay in headers; reusable types and services use
-modules. Validate the TOML parser dependency boundary for that integration.
+Planned capabilities cover build-system configuration collection, a Python tool (`cfggen.py`)
+that assembles runtime configuration from shared pieces and layers, C++ configuration discovery,
+and mapping configuration values onto C++ types. Each implementation provides standalone tools
+and C++ library support. Configuration macros stay in headers; reusable types and services use
+modules. Validate each parser dependency boundary for that integration.
 
-Apps and components depend on `toml_config` when they need it; Assembly remains independent.
+Apps and components choose the configuration implementation they need; Assembly and logger
+remain independent of either implementation.
 This step also exercises a tool run at build time, configuration installation, and CI access
 to a private component dependency.
 
