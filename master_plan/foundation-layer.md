@@ -1,6 +1,6 @@
 # Foundation layer: Build template, Integration Framework, Config Library, Logger
 
-Updated 2026-10-08.
+Updated 2026-10-13.
 
 The [memorandum](../memorandum.md) records intent and platform decisions. This roadmap tracks
 implementation order and remaining work; operational guidance lives in the component repos.
@@ -12,7 +12,7 @@ Each step should build, pass its tests, and provide the foundation needed by the
 | Repository | Role | Current work |
 |---|---|---|
 | [cmake_template](https://github.com/nomisma-labs/cmake_template) | Build template repo : shared CMake infrastructure, repository skeleton and feature lab | C++20 module-first implementation is committed; documentation review and the next release remain. |
-| [assembly](https://github.com/nomisma-labs/assembly) | Integration framework: Node/context composition, bidirectional relay and callable delegates | Framework extraction and illustrative tests; native-module migration follows the template update. |
+| [assembly](https://github.com/nomisma-labs/assembly) | Integration framework: Node/context composition, bidirectional relay and callable delegates | Framework complete; released as `v0.2.0`. |
 | [json_config](https://github.com/nomisma-labs/json_config), [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library with JSON and TOML implementations | Shared design and similar capabilities for layered configuration, tools and C++ integration |
 | [trace_logger](https://github.com/nomisma-labs/trace_logger) | High performance logging services and macro interface | Created, early stage |
 
@@ -86,25 +86,22 @@ infrastructure work beyond the implemented baseline.
 
 Assembly composes processing nodes at compile time. Relay passes requests forward and responses
 back through matching handlers; context mixins contribute shared state and services. Delegates
-connect runtime event sources to the static framework. Metal supplies its typelist machinery and
-remains a header dependency.
+connect runtime event sources to the static framework. Assembly custom traits configure node
+policies and list the events without a final consumer, which the relay suppresses at the end of
+each route. An exception escaping event processing is fatal by policy. Metal supplies the
+typelist machinery inside the module; applications declare lists with `nom::type_list`.
 
 Start with **[How to understand Assembly/Relay applications](https://github.com/nomisma-labs/assembly/blob/master/docs/assembly/understanding_applications.md)**:
 read the node list, then identify context services, event handlers, trait choices, configuration
 reads, and original event emitters.
 
-The extraction is the first real library created from the template and exercises template-heavy
-module code. Review the [framework guide](https://github.com/nomisma-labs/assembly/blob/master/docs/assembly/framework.md) and
+Assembly is the first library created from the template and exercises template-heavy module
+code. Review the [framework guide](https://github.com/nomisma-labs/assembly/blob/master/docs/assembly/framework.md) and
 [teaching tests](https://github.com/nomisma-labs/assembly/blob/master/docs/assembly/tests.md).
 
-Remaining work:
-
-- Review the extracted API and the four learning suites: `assembly`, `relay`, `complex_relay`
-  and `delegate`.
-- Sync the reviewed template revision and migrate the framework to native `nom.assembly`
-  interfaces and partitions, with importing apps and tests.
-- Validate on GCC and Clang, including source/package consumers and installed Metal headers.
-- Release the library once the reviewed framework and integration checks pass.
+The framework is complete and released as `v0.2.0`, synced with cmake_template `v0.8.2`. Its five
+teaching suites (`assembly`, `custom_traits`, `relay`, `complex_relay` and `delegate`) and
+source/package consumers pass locally on GCC and Clang.
 
 ## 6. App Config
 
