@@ -11,7 +11,7 @@ Each step should build, pass its tests, and provide the foundation needed by the
 
 | Repository | Role | Current work |
 |---|---|---|
-| [cmake_template](https://github.com/nomisma-labs/cmake_template) | Build template repo : shared CMake infrastructure, repository skeleton and feature lab | C++20 module-first implementation is committed; documentation review and the next release remain. |
+| [cmake_template](https://github.com/nomisma-labs/cmake_template) | Build template repo : shared CMake infrastructure, repository skeleton and feature lab | Module-first foundation released as `v0.8.2`; further improvements arrive as derived repos need them. |
 | [assembly](https://github.com/nomisma-labs/assembly) | Integration framework: Node/context composition, bidirectional relay and callable delegates | Framework complete; released as `v0.2.0`. |
 | [json_config](https://github.com/nomisma-labs/json_config), [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library with JSON and TOML implementations | Shared design and similar capabilities for layered configuration, tools and C++ integration |
 | [trace_logger](https://github.com/nomisma-labs/trace_logger) | High performance logging services and macro interface | Created, early stage |
@@ -77,9 +77,10 @@ It transfers shared infrastructure from committed template revisions. A composit
 requires migrating each repo's own code, tests and CMake declarations; coordinate those changes
 with the sync and validate source and package consumption together.
 
-Versions `v0.1.0` and `v0.2.0` are already tagged. The native-module change follows `v0.2.0`.
-Current local validation and remaining experiments are recorded in the
-[lab](https://github.com/nomisma-labs/cmake_template/blob/master/docs/lab/README.md); the [backlog](wip/cmake_template.md) tracks
+Releases run from `v0.1.0` to `v0.8.2`; the native-module change arrived in `v0.3.0`. The
+[changelog](https://github.com/nomisma-labs/cmake_template/blob/master/CHANGELOG.md) records each
+release and the upgrade steps derived repos take by hand. Current local validation and remaining
+experiments are recorded in the [lab](https://github.com/nomisma-labs/cmake_template/blob/master/docs/lab/README.md); the [backlog](wip/cmake_template.md) tracks
 infrastructure work beyond the implemented baseline.
 
 ## 5. Assembly : Integration Framework
