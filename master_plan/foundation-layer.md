@@ -89,13 +89,13 @@ back through matching handlers; context mixins contribute shared state and servi
 connect runtime event sources to the static framework. Metal supplies its typelist machinery and
 remains a header dependency.
 
-Start with **[How to understand Assembly/Relay applications](https://github.com/nomisma-labs/assembly/blob/master/docs/understanding_applications.md)**:
+Start with **[How to understand Assembly/Relay applications](https://github.com/nomisma-labs/assembly/blob/master/docs/assembly/understanding_applications.md)**:
 read the node list, then identify context services, event handlers, trait choices, configuration
 reads, and original event emitters.
 
 The extraction is the first real library created from the template and exercises template-heavy
-module code. Review the [framework guide](https://github.com/nomisma-labs/assembly/blob/master/docs/framework.md) and
-[teaching tests](https://github.com/nomisma-labs/assembly/blob/master/docs/tests.md).
+module code. Review the [framework guide](https://github.com/nomisma-labs/assembly/blob/master/docs/assembly/framework.md) and
+[teaching tests](https://github.com/nomisma-labs/assembly/blob/master/docs/assembly/tests.md).
 
 Remaining work:
 
