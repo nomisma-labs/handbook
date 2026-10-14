@@ -1,6 +1,6 @@
 # Foundation layer: Build template, Integration Framework, Config Library, Logger
 
-Updated 2026-10-13.
+Updated 2026-10-15.
 
 The [memorandum](../memorandum.md) records intent and platform decisions. This roadmap tracks
 implementation order and remaining work; operational guidance lives in the component repos.
@@ -13,7 +13,7 @@ Each step should build, pass its tests, and provide the foundation needed by the
 |---|---|---|
 | [cmake_template](https://github.com/nomisma-labs/cmake_template) | Build template repo : shared CMake infrastructure, repository skeleton and feature lab | Module-first foundation released as `v0.8.2`; further improvements arrive as derived repos need them. |
 | [assembly](https://github.com/nomisma-labs/assembly) | Integration framework: Node/context composition, bidirectional relay and callable delegates | Framework complete; released as `v0.2.0`. |
-| [json_config](https://github.com/nomisma-labs/json_config), [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library with JSON and TOML implementations | Shared design and similar capabilities for layered configuration, tools and C++ integration |
+| [json_config](https://github.com/nomisma-labs/json_config), [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library with JSON and TOML implementations | JSON workflow released as `v0.1.0`; TOML remains planned around the same design. |
 | [trace_logger](https://github.com/nomisma-labs/trace_logger) | High performance logging services and macro interface | Created, early stage |
 
 Each trading system has a container repository that selects compatible component versions.
@@ -106,21 +106,35 @@ source/package consumers pass locally on GCC and Clang.
 
 ## 6. App Config
 
-The application configuration library has two implementations:
+The application configuration library has two format implementations:
 [json_config](https://github.com/nomisma-labs/json_config) based on JSON and
 [toml_config](https://github.com/nomisma-labs/toml_config) based on TOML. They share the same
-design and are intended to provide similar capabilities.
+design and are intended to provide similar capabilities. The JSON implementation is released
+as `v0.1.0`; the TOML implementation remains future work.
 
-Planned capabilities cover build-system configuration collection, a Python tool (`cfggen.py`)
-that assembles runtime configuration from shared pieces and layers, C++ configuration discovery,
-and mapping configuration values onto C++ types. Each implementation provides standalone tools
-and C++ library support. Configuration macros stay in headers; reusable types and services use
-modules. Validate each parser dependency boundary for that integration.
+The [jcfg language guide](https://github.com/nomisma-labs/json_config/blob/master/docs/json_config/jcfg.md)
+defines layered configuration through worked examples. Four components support the complete
+JSON configuration workflow:
+
+- **Python generation:** `jcfggen.py` assembles inherited sections and imported fragments into
+  ordinary JSON files.
+- **Build integration:** the shared kit collects source configs; json_config supplies generation,
+  per-section tests, cleanup and config installation helpers.
+- **C++ location and loading:** applications resolve a config file, apply runtime variables and
+  command-line overrides, then map and validate the configuration.
+- **JSON/C++ mapping:** `NOM_JCONFIG` uses nlohmann/json with common C++ config types. Application
+  structures own their validation. Macros stay in headers; reusable types and services use modules.
+
+The [component guides](https://github.com/nomisma-labs/json_config/blob/master/docs/json_config/README.md)
+document each part. The [md_capture example](https://github.com/nomisma-labs/json_config/blob/master/apps/md_capture/README.md)
+connects the language guide to C++ application code;
+[config_workflow_example](https://github.com/nomisma-labs/json_config/blob/master/apps/config_workflow_example/README.md)
+covers generation, loading, `--check-config`, testing and installation. Tests exercise the full
+workflow and [native C++ consumers](https://github.com/nomisma-labs/json_config/blob/master/tests/integration/library_usage/README.md)
+using both source integration and the installed package.
 
 Apps and components choose the configuration implementation they need; Assembly and logger
 remain independent of either implementation.
-This step also exercises a tool run at build time, configuration installation, and CI access
-to a private component dependency.
 
 ## 7. Logger
 

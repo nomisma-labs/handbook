@@ -8,7 +8,7 @@
 
 4. **Development and distribution.** Components will have a private development version under a proprietary license, with the full development and agent tooling, skills, internal documentation, comprehensive tests, and CI/CD. Where distributed, a public or client version will carry an appropriate open-source or commercial license, with reduced documentation, test coverage, and CI/CD suited to its audience. Components intended solely for internal tooling, such as `cmake_template`, will remain private.
 
-5. **Dependencies.** Repositories will depend on one another through Git submodules and explicit build-system dependencies. Shared components such as [toml_config](https://github.com/nomisma-labs/toml_config), the configuration library based on TOML, and `logger` will support many repositories; each system repository will assemble a compatible set of component versions.
+5. **Dependencies.** Repositories will depend on one another through Git submodules and explicit build-system dependencies. Shared components such as the configuration library, with [json_config](https://github.com/nomisma-labs/json_config) and [toml_config](https://github.com/nomisma-labs/toml_config) as JSON and TOML alternatives, and `logger` will support many repositories; each system repository will assemble a compatible set of component versions.
 
 6. **Packaging and Distribution.** Nomisma Labs provides means for various types of packaging and distribution. Initially, we will support the following options: source-level distribution, pre-built libraries and binaries for a certain platform, Python "wheel" packages. Please see [packaging.md](master_plan/wip/packaging.md).
 
