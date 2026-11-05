@@ -1,4 +1,4 @@
-# Service layer: Communication and execution facilities
+# Service layer: Communication, execution and API facilities
 
 Updated 5 November 2026.
 
@@ -13,6 +13,7 @@ constraints and validation evidence live with their code.
 | --- | --- | --- |
 | [asio_comm](https://github.com/nomisma-labs/asio_comm) | TLS WebSocket, HTTPS/HTTP/1.1 and timers based on Boost.Asio and Boost.Beast | Initial communication scope complete as of 5 November 2026; version 0.2.0 is prepared for release. |
 | Multithreading facilities | Execution domains, worker lifecycle and explicit event transfer between threads | Future work; interfaces and repository boundaries remain to be designed. |
+| Application API facilities | Expose application commands, queries and event streams to external clients | Future work; protocol, interface style and framework remain undecided. |
 
 Additional services can join this layer as applications need them. The service layer does not
 own trading strategies, exchange-specific subscription semantics or capture/storage policy.
@@ -83,3 +84,15 @@ executors, clock domains and replay. It remains a proposal; the current Asio-bac
 implemented, while backend-neutral execution and virtual time are future work. Keep those
 contracts reusable across communication clients and applications rather than embedding them
 in an exchange feeder.
+
+## Future application API services
+
+Provide reusable facilities for exposing application functionality to external clients.
+The API approach remains open: a conventional HTTP/REST interface or an RPC/binary alternative
+where efficiency requirements justify it. gRPC is not preferred given prior experience with it;
+no protocol, serialization format or framework has been selected.
+
+Define the required clients, commands, queries and event subscriptions before selecting the
+approach. Assess compatibility/versioning, authentication, deadlines, cancellation and
+backpressure alongside measured performance and integration complexity. Applications own the
+domain operations and access policy; this component supplies the reusable API infrastructure.

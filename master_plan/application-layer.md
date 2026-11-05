@@ -9,9 +9,11 @@ configuration, deployment, lifecycle policy and the interpretation of results.
 
 ## First component: md_capture
 
-`md_capture` is the first planned application component: capture exchange market data using
-the communication services and retain it for analysis and replay. This is application work
-to begin next; the current `asio_comm` feeders are examples, not its implementation.
+[`md_capture`](https://github.com/nomisma-labs/md_capture) is the first application repository:
+capture exchange market data using the communication services and retain it for analysis and
+replay. Its initial scaffold comes from `cmake_template` and pins `base`, `assembly`,
+`spd_logger`, `asio_comm` and `json_config`. Capture applications and storage are not yet
+implemented; the current `asio_comm` feeders remain integration examples.
 
 The initial scope should define:
 
@@ -28,7 +30,9 @@ The first composition will use `asio_comm` for transport and timers, Assembly/re
 component integration, and foundation components for configuration and logging. Capture-specific
 policy belongs here or in its exchange adapters; protocol mechanics remain in the service layer.
 
-Repository layout, storage choices and the first supported exchange set remain design decisions.
+Exchange applications will live under `apps/<exchange>/<app>/`, with shared capture code added
+under `core/` as its contracts emerge. Storage choices and the first supported exchange set
+remain design decisions, tracked in the repository's [work list](https://github.com/nomisma-labs/md_capture/blob/master/TODO.md).
 The JSON configuration repository's `md_capture` example is a configuration demonstration,
 not a released capture application. The existing feeder/provider examples can inform integration
 without becoming a shared exchange-client abstraction prematurely.

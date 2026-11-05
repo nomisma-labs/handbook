@@ -25,4 +25,4 @@
 | --- | --- | --- |
 | [Foundation layer](master_plan/foundation-layer.md) | Shared build infrastructure, utilities, composition, configuration and logging | `cmake_template`, `base`, `assembly`, configuration libraries and loggers. |
 | [Service layer](master_plan/service-layer.md) | Reusable runtime services used by applications | `asio_comm` is the first completed component; multithreading facilities are future work. |
-| [Application layer](master_plan/application-layer.md) | Operational workflows that compose foundation and service components | `md_capture` is the first planned component. |
+| [Application layer](master_plan/application-layer.md) | Operational workflows that compose foundation and service components | `md_capture` has an initial repository scaffold; capture applications are next. |
