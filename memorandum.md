@@ -19,4 +19,10 @@
 - **Hosting:** GitHub organization, private repositories by default, GitHub Actions for CI/CD; start on the Free plan.
 - **Language:** module-first C++, using the latest stable standard supported by the project toolchain. Use `nom` as the root namespace, component namespaces where useful, and standard-library-style `snake_case` naming.
 
-The initial foundational repositories and their implementation details are covered in [foundation-layer.md](master_plan/foundation-layer.md).
+## Architecture directory
+
+| Layer | Responsibility | Components |
+| --- | --- | --- |
+| [Foundation layer](master_plan/foundation-layer.md) | Shared build infrastructure, utilities, composition, configuration and logging | `cmake_template`, `base`, `assembly`, configuration libraries and loggers. |
+| [Service layer](master_plan/service-layer.md) | Reusable runtime services used by applications | `asio_comm` is the first completed component; multithreading facilities are future work. |
+| [Application layer](master_plan/application-layer.md) | Operational workflows that compose foundation and service components | `md_capture` is the first planned component. |
