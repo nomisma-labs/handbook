@@ -21,6 +21,9 @@
 
 ## Architecture directory
 
+See [Layers and integration boundaries](master_plan/layers.md) for dependency direction and
+ownership of shared configuration adapters and application services.
+
 | Layer | Responsibility | Components |
 | --- | --- | --- |
 | [Foundation layer](master_plan/foundation-layer.md) | Shared build infrastructure, utilities, composition, configuration and logging | `cmake_template`, `base`, `assembly`, configuration libraries and loggers. |
