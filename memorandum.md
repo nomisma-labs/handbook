@@ -26,6 +26,7 @@ ownership of shared configuration adapters and application services.
 
 | Layer | Responsibility | Components |
 | --- | --- | --- |
-| [Foundation layer](master_plan/foundation-layer.md) | Shared build infrastructure, utilities, composition, configuration and logging | `cmake_template`, `base`, `assembly`, configuration libraries and loggers. |
+| [Toolchain layer](master_plan/toolchain-layer.md) | Development, build, validation and delivery infrastructure for all code layers | Currently `cmake_template`; the layer name is independent of its implementation. |
+| [Core layer](master_plan/core-layer.md) | Common definitions, composition, configuration, logging and adapters between them | `base`, `assembly`, configuration libraries and loggers; planned integration in `nom_core`. |
 | [Service layer](master_plan/service-layer.md) | Reusable runtime services used by applications | `asio_comm` is the first completed component; multithreading facilities are future work. |
-| [Application layer](master_plan/application-layer.md) | Operational workflows that compose foundation and service components | `md_capture` has an initial repository scaffold; capture applications are next. |
+| [Application layer](master_plan/application-layer.md) | Operational workflows that compose core and service components | `md_capture`; its operational guarantees and application boundaries are under development. |

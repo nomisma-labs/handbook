@@ -1,42 +1,29 @@
-# Foundation layer: Build template, Common Types, Integration Framework, Config Library, Logger
+# Core layer: Common types, composition, configuration and logging
 
-Updated 2026-10-17.
+Layer boundaries updated 8 November 2026. Component status below retains the 17 October 2026
+snapshot; consult each repository for subsequent releases.
 
 The [memorandum](../memorandum.md) records intent and platform decisions. This roadmap tracks
 implementation order and remaining work; operational guidance lives in the component repos.
+The [layer overview](layers.md) defines ownership and the planned `nom_core` integration.
+Build infrastructure belongs to the separate [toolchain layer](toolchain-layer.md).
 
 ## 1. Sequence and current status
 
-Each step should build, pass its tests, and provide the foundation needed by the next component.
+Each step should build, pass its tests, and provide the facilities needed by the next component.
 
 | Repository | Role | Current work |
 |---|---|---|
-| [cmake_template](https://github.com/nomisma-labs/cmake_template) | Build template repo : shared CMake infrastructure, repository skeleton and feature lab | Shared foundation released as `v0.11.0`; further improvements arrive as derived repos need them. |
-| [base](https://github.com/nomisma-labs/base) | Common definitions shared by foundational libraries | Released as `v0.1.0`; owns the format-independent configuration types extracted from `json_config`. |
+| [base](https://github.com/nomisma-labs/base) | Common definitions shared by core libraries | Released as `v0.1.0`; owns the format-independent configuration types extracted from `json_config`. |
 | [assembly](https://github.com/nomisma-labs/assembly) | Integration framework: Node/context composition, bidirectional relay and callable delegates | Framework complete; released as `v0.2.0`. |
 | [json_config](https://github.com/nomisma-labs/json_config), [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library with JSON and TOML implementations | JSON workflow released as `v0.1.0`; now consumes common types from `base`. TOML implementation exists; shared-type adoption remains pending. |
 | [spd_logger](https://github.com/nomisma-labs/spd_logger) | General-purpose, synchronous application logger based on spdlog | Released as `v0.1.1`; one eager global logger, single-threaded operation and C++ configuration using `base`. |
 | [trace_logger](https://github.com/nomisma-labs/trace_logger) | High performance logging services and macro interface | Created, early stage |
 
 Each trading system has a container repository that selects compatible component versions.
-The [template backlog](wip/cmake_template.md) lists proposed improvements; they are introduced
-as needed rather than making every lab experiment a prerequisite for the next repository.
-
-### Repository creation and shared-kit updates
-
-`cmake_template` supplies the starting repository and later shared-kit updates. Its files are
-copied and synchronized; it is not a library dependency or a submodule of these repositories.
-
-```mermaid
-flowchart TB
-    kit["cmake_template"]
-    kit -.-> base["base"]
-    kit -.-> assembly["assembly"]
-    kit -.-> json["json_config"]
-    kit -.-> toml["toml_config"]
-    kit -.-> spd["spd_logger"]
-    kit -.-> trace["trace_logger"]
-```
+Repository creation, shared-kit updates and infrastructure experiments belong to the
+[toolchain layer](toolchain-layer.md). `cmake_template` currently provides that tooling to all
+code layers through copied and synchronized kit files.
 
 ### Library dependencies between repositories
 
@@ -69,8 +56,8 @@ namespace hierarchies are independent: `nom.assembly` exposes its API directly i
 
 Nomisma declarations live in native module interfaces and partitions; compiled definitions use
 implementation units. Apps and tests import the library's primary module. Macros stay in headers;
-third-party dependencies use a tested module wrapper or header boundary. Each file includes the
-standard-library headers it uses; `import std;` remains a toolchain investigation.
+third-party dependencies use a tested module wrapper or header boundary. The shared kit
+now supports `import std;`; use the current module rules linked below for implementation details.
 
 The canonical [conventions](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/conventions.md) define naming, file layout,
 target names and enforcement. The [module rules](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md#modules)
@@ -100,49 +87,7 @@ Every repo starts versioned at `0.1.0`, follows Semantic Versioning, and keeps i
 `project()`. Annotated `vX.Y.Z` tags identify releases on `master`; CI checks tag/version agreement.
 The [release procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md#versioning) is maintained in the template.
 
-## 4. Build Template
-
-```mermaid
-flowchart LR
-    kit["cmake_template"]
-    subgraph external["External"]
-        json["nlohmann/json"]
-        boost["Boost"]
-        catch2["Catch2"]
-        python["CPython / scikit-build-core"]
-    end
-    kit -. "example library" .-> json
-    kit -. "example app" .-> boost
-    kit -. "tests" .-> catch2
-    kit -. "optional wheel example" .-> python
-```
-
-These dependencies exercise template examples and tests. Derived repositories declare their own
-dependencies; template creation does not make every example dependency part of each new library.
-
-The template supplies the shared kit, presets, checks, CI, agent guidance and recipes. It also
-serves as the lab for features that will affect other repositories. Its native `nom.example`
-module demonstrates partitions, template definitions, implementation units, a macro header and
-private JSON integration. Importing tests cover source and installed-package consumption;
-other integration checks cover app selection and installation relocation.
-
-Create repositories with the [new-repo procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/new_repo.md).
-The initializer removes the example and lab, leaving an empty repository that grows through
-[code recipes](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/howto.md). Repository settings and private dependency
-access need their own setup.
-
-For updates, follow the [sync procedure](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/new_repo.md#keeping-repos-in-sync).
-It transfers shared infrastructure from committed template revisions. A composition change also
-requires migrating each repo's own code, tests and CMake declarations; coordinate those changes
-with the sync and validate source and package consumption together.
-
-Releases run from `v0.1.0` to `v0.11.0`; the native-module change arrived in `v0.3.0`. The
-[changelog](https://github.com/nomisma-labs/cmake_template/blob/master/CHANGELOG.md) records each
-release and the upgrade steps derived repos take by hand. Current local validation and remaining
-experiments are recorded in the [lab](https://github.com/nomisma-labs/cmake_template/blob/master/docs/lab/README.md); the [backlog](wip/cmake_template.md) tracks
-infrastructure work beyond the implemented baseline.
-
-## 5. Base: Common definitions
+## 4. Base: Common definitions
 
 ```mermaid
 flowchart LR
@@ -153,14 +98,14 @@ flowchart LR
     base -. "tests" .-> catch2
 ```
 
-`base` holds common definitions used across the foundation layer. Its first component is the
+`base` holds common definitions used across the core layer. Its first component is the
 format-independent configuration types moved from `json_config`, together with their documentation,
 tests and CMake exports. The library depends only on the standard library. Consumers import
 `nom.config_types` and link `nom::config_types` from the `base` package. `json_config` adds JSON
 mapping and loading; `spd_logger` uses the types directly in C++ configuration objects.
 See the [type guide](https://github.com/nomisma-labs/base/blob/master/docs/base/config_types.md).
 
-## 6. Assembly : Integration Framework
+## 5. Assembly : Integration Framework
 
 ```mermaid
 flowchart LR
@@ -192,7 +137,7 @@ The framework is complete and released as `v0.2.0`. Its five
 teaching suites (`assembly`, `custom_traits`, `relay`, `complex_relay` and `delegate`) and
 source/package consumers pass locally on GCC and Clang.
 
-## 7. App Config
+## 6. App Config
 
 The application configuration library has two format implementations:
 [json_config](https://github.com/nomisma-labs/json_config) based on JSON and
@@ -265,7 +210,7 @@ It has not yet adopted the common types from `base`. Its build still populates a
 although the library does not use it. See the
 [repository guide](https://github.com/nomisma-labs/toml_config/blob/master/README.md).
 
-## 8. Logger
+## 7. Logger
 
 The two logger repositories are independent alternatives. Their matching interfaces are intentional:
 an application chooses one implementation, and neither logger depends on the other.
@@ -314,32 +259,3 @@ flowchart LR
 
 `trace_logger` remains the separate high-performance logging effort. Both logger repositories pin
 spdlog and fmt independently, with spdlog configured to use the external fmt library.
-
-## 9. Hosting, CI and documentation
-
-The organization is `nomisma-labs`; repositories use `master` as the default branch. Privacy,
-licenses and distribution policy are recorded in the memorandum.
-
-The shared [CI workflow](https://github.com/nomisma-labs/cmake_template/blob/master/.github/workflows/ci.yml) currently builds the
-`ci` preset and runs Python, SPDX, formatting, naming and release-tag checks. Broader compiler,
-sanitizer and initializer coverage is tracked in the template backlog. Hosted run status and
-image publication need verification separately from local validation.
-
-The CI tool image should be public; it contains public tools. When hosted CI needs private
-component dependencies, provide generic read-only GitHub App checkout support through the
-template workflows and sync it into consuming repos. Setup instructions live in the new-repo guide.
-
-Cross-repo decisions and plans live in this handbook. Component APIs, recipes, validation results
-and compiler findings live with their code. Agents use each repo's `AGENTS.md`, the shared
-conventions and recipes, and update relevant documentation alongside code changes.
-
-## 10. Toolchain and experiments
-
-C++23 is the current validated baseline. The current template presets use GCC 16 and Clang 22;
-development and CI target Ubuntu 26.04 with Ninja. Exact versions, including GCC's development-snapshot status,
-are recorded in the [toolchain guide](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md#toolchain) and
-[CI image](https://github.com/nomisma-labs/cmake_template/blob/master/docker/ci/Dockerfile).
-
-Validate compiler or standard upgrades in the lab before changing the shared baseline.
-The [lab checklist](https://github.com/nomisma-labs/cmake_template/blob/master/docs/lab/README.md) owns remaining module performance,
-IDE/debugger, platform and standard-library investigations, along with historical findings.

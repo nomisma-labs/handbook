@@ -6,9 +6,12 @@ Supporting detail for the [improvement review](cmake_template.md). The review se
 this note preserves examples and reasoning. Proposed tooling options below are candidates to evaluate,
 not features already enabled.
 
+Source links use the agreed [`src/` layout](../layers.md#repository-layout);
+the template source migration is pending.
+
 ## Warning examples
 
-The current [warning helper](../../../cmake_template/cmake/kit/nom_targets.cmake) enables
+The current [warning helper](../../../toolchain/cmake_template/cmake/kit/internal/target_settings.cmake) enables
 `-Wall -Wextra -Wpedantic` on owned compiled targets. Extend it in small groups, using the
 [cpp-best-practices warning configuration](https://github.com/cpp-best-practices/cmake_template/blob/b86318abbf55a657a11a0cf2acce69f221841b22/cmake/CompilerWarnings.cmake)
 as an implementation reference:
@@ -29,11 +32,11 @@ Nomisma C++ library APIs are declared in native named modules from the start. Th
 implementation is under review; existing framework repos still need their local code and tests
 migrated.
 
-The primary interface [example.cppm](../../../cmake_template/core/example/example.cppm)
+The primary interface [example.cppm](../../../toolchain/cmake_template/src/example/example.cppm)
 declares `export module nom.example;` and re-exports the `counter`, `join`, and `settings`
 interface partitions. Those partitions own the public declarations, including template
 definitions needed by importers. Non-template definitions live in implementation units such as
-[counter.cpp](../../../cmake_template/core/example/counter.cpp), which declares
+[counter.cpp](../../../toolchain/cmake_template/src/example/counter.cpp), which declares
 `module nom.example;`. Apps, unit tests, and source/package consumers import `nom.example`.
 
 Headers remain at specific boundaries:
@@ -45,14 +48,14 @@ Headers remain at specific boundaries:
   integration requires it. Includes in a module's global module fragment precede its named
   module declaration.
 
-For example, [settings.cpp](../../../cmake_template/core/example/settings.cpp) includes
+For example, [settings.cpp](../../../toolchain/cmake_template/src/example/settings.cpp) includes
 nlohmann privately in its global module fragment. The settings partition exposes parsing,
 serialization, and loading through standard-library types; it does not export JSON types.
 The dependency remains in installed package metadata because the static library's link interface
 references its private target. Compiler-specific findings are recorded in
-[module findings](../../../cmake_template/docs/lab/third_party_in_modules.md).
+[module findings](../../../toolchain/cmake_template/docs/lab/third_party_in_modules.md).
 
-The [lab checklist](../../../cmake_template/docs/lab/README.md) records validation of native
+The [lab checklist](../../../toolchain/cmake_template/docs/lab/README.md) records validation of native
 interfaces, partitions, implementation units, importing tests, and source/package consumers on
 GCC and Clang. Tooling, compiler upgrades, additional platforms, and measured build times remain
 useful investigations within this design.
@@ -76,7 +79,7 @@ Keep instrumentation explicit in development/test presets and assess release set
 
 Derived repos commit their own copy of the shared kit and tools. Their `.template_ref` records
 the template URL and the exact upstream commit used as the update baseline.
-The current [sync script](../../../cmake_template/tools/sync_template.py):
+The current [sync script](../../../toolchain/cmake_template/tools/kit/sync_template.py):
 
 1. Resolves the requested upstream commit/tag (`--to`), or the latest upstream commit.
 2. Diffs template-owned paths between the recorded and requested commits, excluding the removed initializer.
@@ -84,7 +87,7 @@ The current [sync script](../../../cmake_template/tools/sync_template.py):
 4. After successful application, records the new revision in `.template_ref`; that file remains unstaged.
 
 Review the staged changes and `.template_ref`, validate the result, then stage the reference and
-commit both together. Commands are in [keeping repos in sync](../../../cmake_template/docs/new_repo.md#keeping-repos-in-sync).
+commit both together. Commands are in [keeping repos in sync](../../../toolchain/cmake_template/docs/kit/new_repo.md#keeping-repos-in-sync).
 
 Synchronization operates on committed template revisions and shared infrastructure paths; it
 does not migrate a derived repo's framework code, tests, or project-specific CMake files. Apply

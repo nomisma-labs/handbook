@@ -3,7 +3,7 @@
 Updated 5 November 2026.
 
 The [memorandum](../memorandum.md#architecture-directory) places applications above the
-[foundation](foundation-layer.md) and [service](service-layer.md) layers. An application selects
+[core](core-layer.md) and [service](service-layer.md) layers. An application selects
 compatible component versions and turns their APIs into an operational workflow. It owns
 configuration, deployment, lifecycle policy and the interpretation of results.
 
@@ -11,7 +11,8 @@ configuration, deployment, lifecycle policy and the interpretation of results.
 
 [`md_capture`](https://github.com/nomisma-labs/md_capture) is the first application repository:
 capture exchange market data using the communication services and retain it for analysis and
-replay. Its initial scaffold comes from `cmake_template` and pins `base`, `assembly`,
+replay. Its initial scaffold comes from the
+[toolchain layer](toolchain-layer.md), currently `cmake_template`, and pins `base`, `assembly`,
 `spd_logger`, `asio_comm` and `json_config`. Capture applications and storage are not yet
 implemented; the current `asio_comm` feeders remain integration examples.
 
@@ -27,11 +28,11 @@ The initial scope should define:
   checks; readiness must be distinguished from merely receiving an acknowledgement.
 
 The first composition will use `asio_comm` for transport and timers, Assembly/relay for
-component integration, and foundation components for configuration and logging. Capture-specific
+component integration, and core components for configuration and logging. Capture-specific
 policy belongs here or in its exchange adapters; protocol mechanics remain in the service layer.
 
 Exchange applications will live under `apps/<exchange>/<app>/`, with shared capture code added
-under `core/` as its contracts emerge. Storage choices and the first supported exchange set
+under `src/` as its contracts emerge. Storage choices and the first supported exchange set
 remain design decisions, tracked in the repository's [work list](https://github.com/nomisma-labs/md_capture/blob/master/TODO.md).
 The JSON configuration repository's `md_capture` example is a configuration demonstration,
 not a released capture application. The existing feeder/provider examples can inform integration
@@ -39,7 +40,7 @@ without becoming a shared exchange-client abstraction prematurely.
 
 ## Growth beyond capture
 
-Further applications can compose the same foundations and services for replay, private-feed
+Further applications can compose the same core libraries and services for replay, private-feed
 processing and order execution. They are future scope, not delivered components of this layer.
 Multithreading facilities will belong to the service layer; each application will choose its
 execution topology and the ownership policy for data crossing those boundaries.

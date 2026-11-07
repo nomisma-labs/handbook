@@ -5,11 +5,12 @@ Updated 2026-10-04.
 Status: work in progress. Native C++ source, libraries and applications are the core distribution
 channels; Python packages provide an additional interface. The [memorandum](../../memorandum.md)
 defines distribution intent and component independence; the
-[foundation plan](../foundation-layer.md) defines shared infrastructure.
+[toolchain layer](../toolchain-layer.md) defines shared build and delivery infrastructure.
 
 ## Scope and ownership
 
-[cmake_template](https://github.com/nomisma-labs/cmake_template) owns the build, dependency,
+The toolchain layer, currently implemented by
+[cmake_template](https://github.com/nomisma-labs/cmake_template), owns the build, dependency,
 installation, packaging and validation mechanisms for every channel. Derived repositories
 choose their targets, dependencies, package contents and audience through that framework.
 Missing mechanisms are implemented and tested in the template before adoption elsewhere.

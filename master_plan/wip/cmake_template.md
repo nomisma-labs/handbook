@@ -4,7 +4,7 @@ Updated 2026-10-04.
 
 This combines the starter-repository surveys into a short improvement backlog.
 [memorandum.md](../../memorandum.md) sets intent;
-[foundation-layer.md](../foundation-layer.md) defines the foundation plan. Proposed work below
+[toolchain-layer.md](../toolchain-layer.md) defines the shared tooling responsibilities. Proposed work below
 is not yet implemented. CI descriptions refer to workflow configuration, not verified hosted runs.
 
 See the [implementation reference](cmake_template_reference.md) for warning examples, module-design
@@ -28,10 +28,10 @@ reasoning, optional testing tools, and template synchronization mechanics.
 - `bootstrap.sh [preset]`: discovers presets through CMake, clears selected builds and old logs,
   then runs fresh builds/tests and quality checks with per-step results. Python compatibility/imports,
   SPDX license comments, formatting, and naming are checked; naming requires the `clang` preset.
-- [CI](../../../cmake_template/.github/workflows/ci.yml) builds `ci`, `clang`, and `complete`.
+- [CI](../../../toolchain/cmake_template/.github/workflows/ci.yml) builds `ci`, `clang`, and `complete`.
   The Clang ASan/UBSan preset runs in default bootstrap validation but is not in that CI matrix.
-  The [template workflow](../../../cmake_template/.github/workflows/template.yml) initializes and
-  validates an empty renamed repo; [template synchronization](../../../cmake_template/tools/sync_template.py)
+  The [template workflow](../../../toolchain/cmake_template/.github/workflows/ci_template.yml) initializes and
+  validates an empty renamed repo; [template synchronization](../../../toolchain/cmake_template/tools/kit/sync_template.py)
   also exists.
 
 ## Public examples worth using
@@ -59,7 +59,7 @@ before updating the committed dependency revision.
 |---|---|---|
 | 1 | **Test shared dependencies and local overrides.** | The top-level project selects one `toml_config` revision for both paths; it is configured once; a local checkout can replace it; dependency tests/apps stay off by default. Declare shared dependencies with consistent names before `FetchContent_MakeAvailable` ([ordering rules](https://cmake.org/cmake/help/latest/module/FetchContent.html)). |
 | 1 | **Strengthen library usage integration tests.** | Extend the existing native-module source/package consumers and installed executable relocation check: move a library installation to a different directory, then build/run an importing consumer with the original source/build trees unavailable. Required dependencies and exported targets work through both source and package consumption. |
-| 1 | **Test the full initialization/update workflow.** | Initialize a renamed repo, add a small library/app, then build/test/install. Apply a template update: preserve project files, report conflicts, keep removed template examples out, and record the matching `.template_ref`. Applying the same update again changes nothing. Follow the [sync instructions](../../../cmake_template/docs/new_repo.md#keeping-repos-in-sync), including staging `.template_ref`. |
+| 1 | **Test the full initialization/update workflow.** | Initialize a renamed repo, add a small library/app, then build/test/install. Apply a template update: preserve project files, report conflicts, keep removed template examples out, and record the matching `.template_ref`. Applying the same update again changes nothing. Follow the [sync instructions](../../../toolchain/cmake_template/docs/kit/new_repo.md#keeping-repos-in-sync), including staging `.template_ref`. |
 | 1, when needed | **Support private dependency checkout.** | Before adding the first private dependency, provide GitHub App token support in template-owned workflows and verify recursive checkout with read-only access to the required repos. |
 | 2 | **Verify module interfaces and remaining public headers independently.** | Each public module builds and an importing consumer compiles. Separately compile each macro or dependency-boundary header to catch missing includes and accidental include-order requirements. `VERIFY_INTERFACE_HEADER_SETS` covers headers only; explicitly build `all_verify_interface_header_sets`, which is outside the default build ([CMake documentation](https://cmake.org/cmake/help/latest/prop_tgt/VERIFY_INTERFACE_HEADER_SETS.html)). |
 | 2 | **Broaden compiler warnings.** | Add small compiler-specific groups, evaluating flags such as `-Wshadow`, `-Wconversion`, and `-Wformat=2`. Apply them to owned targets without imposing warnings-as-errors on projects using the library. |
@@ -69,7 +69,7 @@ before updating the committed dependency revision.
 Independent module/header compilation is a proposed C++ correctness check. The existing
 `tools/check_headers.py` checks SPDX license comments; it does not compile C++ headers or modules.
 Bootstrap runs the checks already implemented; the remaining scenarios above need dedicated tests.
-Track module and toolchain experiments in the [lab checklist](../../../cmake_template/docs/lab/README.md).
+Track module and toolchain experiments in the [lab checklist](../../../toolchain/cmake_template/docs/lab/README.md).
 
 ## Add when there is a demonstrated need
 

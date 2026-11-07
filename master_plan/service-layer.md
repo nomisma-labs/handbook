@@ -3,7 +3,7 @@
 Updated 5 November 2026.
 
 The [memorandum](../memorandum.md#architecture-directory) places reusable runtime services
-above the [foundation layer](foundation-layer.md). Applications compose these services into
+above the [core layer](core-layer.md). Applications compose these services into
 workflows described in the [application layer](application-layer.md). Component APIs, usage
 constraints and validation evidence live with their code.
 
@@ -48,9 +48,10 @@ flowchart LR
     comm --> threads["System thread support"]
 ```
 
-The shared CMake kit comes from `cmake_template`; it is build infrastructure, not a runtime
-component. Assembly/relay composes example applications and routes events synchronously.
-Its routing does not schedule work or transfer ownership across threads.
+The [toolchain layer](toolchain-layer.md), currently implemented by `cmake_template`,
+supplies the shared CMake kit and validation tools. Assembly/relay composes example applications
+and routes events synchronously. Its routing does not schedule work or transfer ownership
+across threads.
 
 The [examples](https://github.com/nomisma-labs/asio_comm/blob/master/apps/README.md) include
 20 market-data feeders and 19 WebSocket/HTTPS symbol providers, with API references and
@@ -65,12 +66,15 @@ The runner now defaults to two seconds per feeder. These short checks do not est
 sustained availability, lossless capture, private-feed or order-execution readiness.
 
 Remaining communication work is tracked in the repository's
-[work plan](https://github.com/nomisma-labs/asio_comm/blob/master/core/asio_comm/current_work.md)
-and [WebSocket stages](https://github.com/nomisma-labs/asio_comm/blob/master/core/asio_comm/ws_current_work.md):
+[work plan](https://github.com/nomisma-labs/asio_comm/blob/master/src/asio_comm/current_work.md)
+and [WebSocket stages](https://github.com/nomisma-labs/asio_comm/blob/master/src/asio_comm/ws_current_work.md):
 long-running Ping/network-loss validation, close-timeout coverage, the exception audit,
 HTTP sending enhancements and optional transport choices. The
 [backlog](https://github.com/nomisma-labs/asio_comm/blob/master/TODO.md) also tracks future CI/CD
 connectivity checks and a possible GitHub results dashboard.
+
+The source links above use the agreed [`src/` layout](layers.md#repository-layout);
+the repository source migration is pending.
 
 ## Future execution and multithreading services
 
