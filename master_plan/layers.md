@@ -134,6 +134,11 @@ The application owns its `log` section and actual settings. The OKX application'
 adapter gives applications one shared logger mapping while preserving application ownership
 of configuration values and startup.
 
+For projects choosing the released [TOML framework](core-layer.md#toml_config), the same
+ownership boundary applies: a TOML logger adapter would use `NOM_TCONFIG_ENUM` and `NOM_TCONFIG`
+with `nom.toml_config`, while logger types and validation remain in `spd_logger`. The JSON
+adapter described above remains specific to the application's selected configuration framework.
+
 ## Services supplied to applications
 
 `asio_service` and `app_terminator` both belong in the service layer. The `asio_comm` examples

@@ -1,6 +1,6 @@
 # Application layer: Market-data capture and trading workflows
 
-Updated 5 November 2026.
+Updated 5 November 2026. Configuration example references updated 8 November 2026.
 
 The [memorandum](../memorandum.md#architecture-directory) places applications above the
 [core](core-layer.md) and [service](service-layer.md) layers. An application selects
@@ -34,9 +34,10 @@ policy belongs here or in its exchange adapters; protocol mechanics remain in th
 Exchange applications will live under `apps/<exchange>/<app>/`, with shared capture code added
 under `src/` as its contracts emerge. Storage choices and the first supported exchange set
 remain design decisions, tracked in the repository's [work list](https://github.com/nomisma-labs/md_capture/blob/master/TODO.md).
-The JSON configuration repository's `md_capture` example is a configuration demonstration,
-not a released capture application. The existing feeder/provider examples can inform integration
-without becoming a shared exchange-client abstraction prematurely.
+The `md_capture` examples in `json_config` and [toml_config](core-layer.md#toml_config) demonstrate
+configuration; they are separate from the capture application repository. The existing
+feeder/provider examples can inform integration without becoming a shared exchange-client
+abstraction prematurely.
 
 ## Growth beyond capture
 

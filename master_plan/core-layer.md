@@ -1,7 +1,7 @@
 # Core layer: Common types, composition, configuration and logging
 
-Layer boundaries updated 8 November 2026. Component status below retains the 17 October 2026
-snapshot; consult each repository for subsequent releases.
+Layer boundaries and TOML configuration status updated 8 November 2026. Other component status
+below retains the 17 October 2026 snapshot; consult each repository for subsequent releases.
 
 The [memorandum](../memorandum.md) records intent and platform decisions. This roadmap tracks
 implementation order and remaining work; operational guidance lives in the component repos.
@@ -16,7 +16,8 @@ Each step should build, pass its tests, and provide the facilities needed by the
 |---|---|---|
 | [base](https://github.com/nomisma-labs/base) | Common definitions shared by core libraries | Released as `v0.1.0`; owns the format-independent configuration types extracted from `json_config`. |
 | [assembly](https://github.com/nomisma-labs/assembly) | Integration framework: Node/context composition, bidirectional relay and callable delegates | Framework complete; released as `v0.2.0`. |
-| [json_config](https://github.com/nomisma-labs/json_config), [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration library with JSON and TOML implementations | JSON workflow released as `v0.1.0`; now consumes common types from `base`. TOML implementation exists; shared-type adoption remains pending. |
+| [json_config](https://github.com/nomisma-labs/json_config) | Application configuration with JSON | JSON workflow released as `v0.1.0`; consumes common types from `base`. |
+| [toml_config](https://github.com/nomisma-labs/toml_config) | Application configuration with TOML | Released as [v0.1.0](https://github.com/nomisma-labs/toml_config/tree/v0.1.0) on 8 November 2026; complete generation, loading and mapping workflow using common types from `base`. |
 | [spd_logger](https://github.com/nomisma-labs/spd_logger) | General-purpose, synchronous application logger based on spdlog | Released as `v0.1.1`; one eager global logger, single-threaded operation and C++ configuration using `base`. |
 | [trace_logger](https://github.com/nomisma-labs/trace_logger) | High performance logging services and macro interface | Created, early stage |
 
@@ -35,12 +36,12 @@ flowchart TB
     json["json_config"] --> base["base"]
     spd["spd_logger"] --> base
     assembly["assembly"]
-    toml["toml_config"]
+    toml["toml_config"] --> base
     trace["trace_logger"]
 ```
 
-These are the current dependencies. `assembly` remains independent of configuration and logging;
-`toml_config` has not yet adopted `base`. The two logger repositories are independent alternatives.
+Both configuration frameworks depend on `base`. `assembly` remains independent of configuration
+and logging. The two logger repositories are independent alternatives.
 Each consuming repository owns its dependency declarations; the template supplies shared build
 mechanisms.
 
@@ -101,8 +102,9 @@ flowchart LR
 `base` holds common definitions used across the core layer. Its first component is the
 format-independent configuration types moved from `json_config`, together with their documentation,
 tests and CMake exports. The library depends only on the standard library. Consumers import
-`nom.config_types` and link `nom::config_types` from the `base` package. `json_config` adds JSON
-mapping and loading; `spd_logger` uses the types directly in C++ configuration objects.
+`nom.config_types` and link `nom::config_types` from the `base` package. `json_config` and
+`toml_config` add mapping and loading for their respective formats; `spd_logger` uses the types
+directly in C++ configuration objects.
 See the [type guide](https://github.com/nomisma-labs/base/blob/master/docs/base/config_types.md).
 
 ## 5. Assembly : Integration Framework
@@ -141,8 +143,10 @@ source/package consumers pass locally on GCC and Clang.
 
 The application configuration library has two format implementations:
 [json_config](https://github.com/nomisma-labs/json_config) based on JSON and
-[toml_config](https://github.com/nomisma-labs/toml_config) based on TOML. Apps and components choose
-the implementation they need; Assembly and both loggers remain independent of either implementation.
+[toml_config](https://github.com/nomisma-labs/toml_config) based on TOML. A project chooses one
+framework for its configuration. Both use the common C++ types from `base` and closely follow
+the same language concepts, tools and documentation structure. Assembly and both loggers remain
+independent of either implementation.
 
 ### json_config
 
@@ -192,23 +196,50 @@ using both source integration and the installed package.
 
 ```mermaid
 flowchart LR
-    toml["toml_config"]
+    subgraph nomisma["Nomisma"]
+        toml["toml_config"]
+        base["base"]
+    end
     subgraph external["External"]
         toml11["toml11"]
+        boost["Boost"]
         catch2["Catch2"]
-        python["Python"]
-        metal["Metal"]
+        python["Python 3.11+"]
     end
+    toml --> base
     toml --> toml11
+    toml -- "program_options" --> boost
     toml -. "tests" .-> catch2
     toml -. "configuration tooling" .-> python
-    toml -. "inherited build setup" .-> metal
 ```
 
-TOML already has a Python configuration generator and C++ discovery, loading and binding support.
-It has not yet adopted the common types from `base`. Its build still populates and installs Metal,
-although the library does not use it. See the
-[repository guide](https://github.com/nomisma-labs/toml_config/blob/master/README.md).
+The TOML workflow was released as [v0.1.0](https://github.com/nomisma-labs/toml_config/tree/v0.1.0)
+on 8 November 2026. It uses `base` for configuration types, toml11 for TOML conversion, and
+Boost.Program_options for command-line parsing.
+
+The [tcfg language guide](https://github.com/nomisma-labs/toml_config/blob/v0.1.0/docs/toml_config/tcfg.md)
+maps the jcfg design to TOML. Four components support the complete workflow:
+
+- **Python generation:** `tcfggen.py` resolves inherited sections, literal imports, fragment
+  pointers, merge/delete/override instructions and generation variables into ordinary TOML.
+- **Build integration:** the shared kit collects configs; `nom_tcfg_generate()` and
+  `nom_tcfg_test()` add generation, per-section checks, cleanup and installation checks.
+- **C++ location and loading:** `nom::tcfg::load_config()` locates and parses the file, substitutes
+  runtime variables, applies ordered overrides, maps the values and calls root validation.
+  `--check-config` supports full, view and silent output modes.
+- **TOML/C++ mapping:** `NOM_TCONFIG` and `NOM_TCONFIG_ENUM` supply checked numeric conversions,
+  nested defaults, optional members, containers, custom converters and explicit enum names.
+  Omitted optional keys preserve C++ initializers; empty optionals serialize by omission.
+  TOML has no null sentinel.
+
+The [component guides](https://github.com/nomisma-labs/toml_config/blob/v0.1.0/docs/toml_config/README.md)
+follow the JSON framework's structure. Examples cover the full configuration workflow,
+application arguments alongside configuration options, and the larger `md_capture` configuration.
+The latter demonstrates configuration rather than operating an exchange capture service.
+Fresh GCC and Clang validation passed all 20 CTest entries, including generation/build tests,
+application CLI checks, and [source and installed consumers](https://github.com/nomisma-labs/toml_config/blob/v0.1.0/tests/integration/library_usage/README.md).
+The repository's [work list](https://github.com/nomisma-labs/toml_config/blob/master/TODO.md)
+records retained decisions, including the `sections` envelope and pointer addressing.
 
 ## 7. Logger
 
