@@ -1,6 +1,6 @@
 # Toolchain layer: Development, build and delivery infrastructure
 
-Updated 8 November 2026.
+Updated 11 November 2026.
 
 The **toolchain layer** provides the tools and conventions used to create, build, test and
 distribute Nomisma components. Its current implementation is the
@@ -22,11 +22,13 @@ for the distinction between tooling support and library dependencies.
 | Shared evolution | Kit synchronization and experiments that establish changes to the supported toolchain |
 
 Each component repository chooses its targets, dependencies, configuration and release version.
-Integrating repositories such as the planned `nom_core` and `nom_services` select compatible
-components and own the adapters between them. The toolchain supplies the mechanisms those
-repositories use; it does not choose their component sets or own application behavior.
+The `nom_core` facade selects compatible core components; `nom_services` remains planned.
+Shared adapters are intended to live in their respective facade repositories. The toolchain
+supplies the mechanisms they use; it does not choose their component sets or own application behavior.
 
 ## Current implementation: cmake_template
+
+**License: Proprietary (private internal tooling).** See the [licensing plan](licensing.md).
 
 `cmake_template` supplies a repository skeleton and a shared kit. The kit includes CMake helpers,
 presets, checks, CI workflows and documentation. New repositories receive copies of these files;
@@ -68,7 +70,10 @@ and `research/` holds local investigations and source checkouts.
 
 The agreed [repository layout](layers.md#repository-layout) uses `src/<component>/` for library
 sources in every code layer. Documentation remains in `docs/<repo>/` and tools in `tools/<repo>/`.
-Applying this convention requires a separate migration of the template and consuming repositories.
+The template implements this convention. The bundled core components, JSON/TOML/YAML
+configuration frameworks, `asio_comm` and `md_capture` use it. `trace_logger` still uses `core/`
+and an older kit. Its migration requires repository-owned source and CMake changes alongside
+kit synchronization.
 
 ## Validation, delivery and documentation
 
@@ -78,9 +83,12 @@ and CI image. The lab records module, performance, IDE/debugger and platform inv
 Local validation, hosted CI results and published images are separate evidence of readiness.
 
 Packaging mechanisms and generic access to private build dependencies belong here. Component
-repositories choose package contents and audience; the [memorandum](../memorandum.md) defines
-licensing and distribution policy. Public CI images should contain public tools, while private
-dependency access is configured separately.
+repositories choose package contents and audience. The [memorandum](../memorandum.md) and
+[licensing plan](licensing.md) define MIT, SUL 1.0 and proprietary distribution. The
+template remains private and proprietary; a distributed component must provide the build
+support its audience needs. The redistribution scope and terms for copied kit files remain an
+[open distribution decision](licensing.md#open-distribution-decisions). Public CI images should
+contain public tools, while private dependency access is configured separately.
 
 Cross-repository decisions and plans live in this handbook. Component APIs and operational
 guides live with their code. The toolchain supplies shared conventions and recipes, and

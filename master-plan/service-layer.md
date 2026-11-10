@@ -1,24 +1,33 @@
 # Service layer: Communication, execution and API facilities
 
-Updated 5 November 2026.
+Updated 11 November 2026.
 
 The [memorandum](../memorandum.md#architecture-directory) places reusable runtime services
 above the [core layer](core-layer.md). Applications compose these services into
 workflows described in the [application layer](application-layer.md). Component APIs, usage
 constraints and validation evidence live with their code.
 
+The selected distribution license for `asio_comm` and the planned `nom_services` repository is
+**Sustainable Use License 1.0 (SUL 1.0)**, under the [licensing plan](licensing.md).
+These are source-available distribution decisions; the current `asio_comm` repository still
+has proprietary license notices. Future service repositories need an explicit selection.
+
 ## Components and status
 
-| Component | Responsibility | Status |
-| --- | --- | --- |
-| [asio_comm](https://github.com/nomisma-labs/asio_comm) | TLS WebSocket, HTTPS/HTTP/1.1 and timers based on Boost.Asio and Boost.Beast | Initial communication scope complete as of 5 November 2026; version 0.2.0 is prepared for release. |
-| Multithreading facilities | Execution domains, worker lifecycle and explicit event transfer between threads | Future work; interfaces and repository boundaries remain to be designed. |
-| Application API facilities | Expose application commands, queries and event streams to external clients | Future work; protocol, interface style and framework remain undecided. |
+| Component | Distribution license | Responsibility | Status |
+| --- | --- | --- | --- |
+| [asio_comm](https://github.com/nomisma-labs/asio_comm) | SUL 1.0 | TLS WebSocket, HTTPS/HTTP/1.1 and timers based on Boost.Asio and Boost.Beast | Implemented; consumes core dependencies through `nom_core`. Further validation and feature work remain. |
+| Shared runtime integration (`nom_services`) | SUL 1.0 (planned) | Execution-context and lifecycle facilities reused across applications | Planned; `asio_service` and application control/termination currently live in application headers. |
+| Multithreading facilities | Unassigned; repository undefined | Execution domains, worker lifecycle and explicit event transfer between threads | Future work; interfaces and repository boundaries remain to be designed. |
+| Application API facilities | Unassigned; repository undefined | Expose application commands, queries and event streams to external clients | Future work; protocol, interface style and framework remain undecided. |
 
-Additional services can join this layer as applications need them. The service layer does not
-own trading strategies, exchange-specific subscription semantics or capture/storage policy.
+Additional services can join this layer as applications need them. Trading strategies and
+capture/storage policy belong to applications. Exchange-specific subscription semantics belong
+to feed adapters, including examples hosted in `asio_comm`, rather than its reusable transport API.
 
 ## Communication: asio_comm
+
+**Distribution license: Sustainable Use License 1.0 (source available).**
 
 The `nom.asio_comm` module exposes three components:
 
@@ -36,13 +45,18 @@ explicit. Public client `close()` is silent and immediate. WebSocket sends curre
 calling thread; HTTPS sends use the asynchronous queue. Calls and callbacks must be serialized
 within the component's execution domain. The library does not create an application worker pool.
 
-The library dependencies below are distinct from build tools and test fixtures:
+The source repository composition is shown below. `nom_core` supplies
+the core component targets; `asio_comm` still links the targets it uses explicitly, and installed
+packages find those component packages directly. `json_config` comes with the facade but is not
+used by the communication library.
 
 ```mermaid
 flowchart LR
-    comm["asio_comm"] --> base["base"]
-    comm --> assembly["assembly"]
-    comm --> logger["spd_logger"]
+    comm["asio_comm"] --> core["nom_core"]
+    core --> base["base"]
+    core --> assembly["assembly"]
+    core --> logger["spd_logger"]
+    core --> json["json_config"]
     comm --> boost["Boost.Asio / Beast / URL"]
     comm --> tls["OpenSSL"]
     comm --> threads["System thread support"]
@@ -59,11 +73,10 @@ explicit Assembly/relay integration. These are integration examples, not complet
 services. Exchange adapters own application heartbeats, subscriptions, payload interpretation
 and useful-data freshness; an application owns reconnection and persistence policy.
 
-The fresh `complete` build passed all 20 local tests, including source/installed consumers.
-The [saved live check](https://github.com/nomisma-labs/asio_comm/blob/master/apps/conn_test_summary.md)
-records 37 PASS, one empty one-second Crypto.com sample and one Binance SBE credential skip.
-The runner now defaults to two seconds per feeder. These short checks do not establish
-sustained availability, lossless capture, private-feed or order-execution readiness.
+Local build and source/installed-consumer checks cover dependency integration. Detailed test
+results and [saved live checks](https://github.com/nomisma-labs/asio_comm/blob/master/apps/conn_test_summary.md)
+belong with the repository. Short connectivity checks do not establish sustained availability,
+lossless capture, private-feed or order-execution readiness.
 
 Remaining communication work is tracked in the repository's
 [work plan](https://github.com/nomisma-labs/asio_comm/blob/master/src/asio_comm/current_work.md)
@@ -73,8 +86,7 @@ HTTP sending enhancements and optional transport choices. The
 [backlog](https://github.com/nomisma-labs/asio_comm/blob/master/TODO.md) also tracks future CI/CD
 connectivity checks and a possible GitHub results dashboard.
 
-The source links above use the agreed [`src/` layout](layers.md#repository-layout);
-the repository source migration is pending.
+The source links above use the implemented [`src/` layout](layers.md#repository-layout).
 
 ## Future execution and multithreading services
 

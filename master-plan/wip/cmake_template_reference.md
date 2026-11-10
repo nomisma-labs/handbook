@@ -1,17 +1,20 @@
 # cmake_template: implementation reference
 
-Updated 2026-10-04.
+Reviewed 11 November 2026.
+
+**Repository license: Proprietary.** `cmake_template` remains private internal tooling under
+the [licensing plan](../licensing.md).
 
 Supporting detail for the [improvement review](cmake_template.md). The review sets priorities;
 this note preserves examples and reasoning. Proposed tooling options below are candidates to evaluate,
 not features already enabled.
 
-Source links use the agreed [`src/` layout](../layers.md#repository-layout);
-the template source migration is pending.
+Source links use the [`src/` layout](../layers.md#repository-layout). Source moves in a derived
+repository are separate from kit synchronization.
 
 ## Warning examples
 
-The current [warning helper](../../../toolchain/cmake_template/cmake/kit/internal/target_settings.cmake) enables
+The current [warning helper](https://github.com/nomisma-labs/cmake_template/blob/master/cmake/kit/internal/target_settings.cmake) enables
 `-Wall -Wextra -Wpedantic` on owned compiled targets. Extend it in small groups, using the
 [cpp-best-practices warning configuration](https://github.com/cpp-best-practices/cmake_template/blob/b86318abbf55a657a11a0cf2acce69f221841b22/cmake/CompilerWarnings.cmake)
 as an implementation reference:
@@ -28,34 +31,40 @@ Keep flags private to owned targets; warnings-as-errors remains a development/CI
 
 ## Native modules and header boundaries
 
-Nomisma C++ library APIs are declared in native named modules from the start. The template
-implementation is under review; existing framework repos still need their local code and tests
-migrated.
+Nomisma C++ library APIs use native named modules. The template and the bundled core component
+repositories implement this design; C++23 `import std;` support is also part of the current kit.
+The `trace_logger` research checkout uses an older kit and has not adopted that toolchain.
 
-The primary interface [example.cppm](../../../toolchain/cmake_template/src/example/example.cppm)
-declares `export module nom.example;` and re-exports the `counter`, `join`, and `settings`
+The primary interface [example.cppm](https://github.com/nomisma-labs/cmake_template/blob/master/src/example/example.cppm)
+declares `export module nom.example;` and re-exports the `counter`, `join`, `settings`, and `types`
 interface partitions. Those partitions own the public declarations, including template
 definitions needed by importers. Non-template definitions live in implementation units such as
-[counter.cpp](../../../toolchain/cmake_template/src/example/counter.cpp), which declares
+[counter.cpp](https://github.com/nomisma-labs/cmake_template/blob/master/src/example/counter.cpp), which declares
 `module nom.example;`. Apps, unit tests, and source/package consumers import `nom.example`.
 
 Headers remain at specific boundaries:
 
 - Macros are included from headers beside imports; they cannot be exported by a module.
-- Each translation unit includes the standard-library headers it uses. `import std` is a
-  separate future toolchain investigation.
+- Each translation unit that uses standard-library declarations imports `std`. Standard macros
+  still require their headers; macro-bearing and third-party includes precede imports.
 - Third-party libraries can be wrapped behind a module API or used through headers where their
   integration requires it. Includes in a module's global module fragment precede its named
   module declaration.
 
-For example, [settings.cpp](../../../toolchain/cmake_template/src/example/settings.cpp) includes
+Include `cmake/kit/std_modules.cmake` before the first `project()` enabling CXX, including in
+source/package consumers. Use `IMPORT_STD` on consuming compiled targets created by the kit;
+`nom_enable_std_modules(target)` serves targets created outside it. See the
+[module setup](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/build.md#modules) for compatible
+compiler, standard-library and CMake versions.
+
+For example, [settings.cpp](https://github.com/nomisma-labs/cmake_template/blob/master/src/example/settings.cpp) includes
 nlohmann privately in its global module fragment. The settings partition exposes parsing,
 serialization, and loading through standard-library types; it does not export JSON types.
 The dependency remains in installed package metadata because the static library's link interface
 references its private target. Compiler-specific findings are recorded in
-[module findings](../../../toolchain/cmake_template/docs/lab/third_party_in_modules.md).
+[module findings](https://github.com/nomisma-labs/cmake_template/blob/master/docs/lab/third_party_in_modules.md).
 
-The [lab checklist](../../../toolchain/cmake_template/docs/lab/README.md) records validation of native
+The [lab checklist](https://github.com/nomisma-labs/cmake_template/blob/master/docs/lab/README.md) records validation of native
 interfaces, partitions, implementation units, importing tests, and source/package consumers on
 GCC and Clang. Tooling, compiler upgrades, additional platforms, and measured build times remain
 useful investigations within this design.
@@ -79,23 +88,32 @@ Keep instrumentation explicit in development/test presets and assess release set
 
 Derived repos commit their own copy of the shared kit and tools. Their `.template_ref` records
 the template URL and the exact upstream commit used as the update baseline.
-The current [sync script](../../../toolchain/cmake_template/tools/kit/sync_template.py):
+The current [sync script](https://github.com/nomisma-labs/cmake_template/blob/master/tools/kit/sync_template.py):
 
-1. Resolves the requested upstream commit/tag (`--to`), or the latest upstream commit.
-2. Diffs template-owned paths between the recorded and requested commits, excluding the removed initializer.
-3. Applies the patch with `git apply --3way`, staging the changes and stopping on conflicts.
-4. After successful application, records the new revision in `.template_ref`; that file remains unstaged.
+1. Resolves the requested upstream commit/tag (`--to`), or the newest release tag by default,
+   then runs that revision's copy of the sync script.
+2. Requires a clean tracked worktree and no untracked files under template-owned paths.
+3. Compares template-owned files with the recorded baseline and target. If local edits conflict,
+   it lists them and changes nothing; explicit `--overwrite` selects the template's versions.
+4. Replaces, adds or removes the selected files to match the target, without merging content
+   or modifying repository-owned source and build declarations.
+5. Records the new revision in `.template_ref` and stages it together with the synchronized files.
+6. Reports stale references, repository-owned files inside kit folders, and intervening
+   changelog upgrade steps that need manual attention.
 
-Review the staged changes and `.template_ref`, validate the result, then stage the reference and
-commit both together. Commands are in [keeping repos in sync](../../../toolchain/cmake_template/docs/kit/new_repo.md#keeping-repos-in-sync).
+Review the staged changes, including `.template_ref`, and validate before committing them
+together. Commands are in [keeping repos in sync](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/new_repo.md#keeping-repos-in-sync).
 
 Synchronization operates on committed template revisions and shared infrastructure paths; it
-does not migrate a derived repo's framework code, tests, or project-specific CMake files. Apply
-the module-first kit update together with that repo's native-module migration, moving declarations
-into interfaces and partitions and making consumers import the framework.
+does not migrate a derived repo's framework code, tests, or project-specific CMake files.
+Changes such as enabling `IMPORT_STD` or moving library sources to `src/` require coordinated
+edits to those repository-owned files and compatible dependency pins.
 
 [beman-submodule](https://github.com/bemanproject/beman-submodule#how-does-it-work) is a reference
 for this model: committed infrastructure files, a recorded upstream revision, and explicit update
 and status commands. A comparable status check could identify local deviations before updating.
-For Nomisma, it must account for intentional initializer removals. Automated checks for conflict
-handling, preserved project files, and repeat updates remain in the review backlog.
+For Nomisma, it must account for intentional initializer removals. The current
+[sync regression](https://github.com/nomisma-labs/cmake_template/blob/master/tests/kit/template_sync/check.py) already checks
+conflict refusal, explicit overwrite, preserved repository files, staged changes and repeat
+updates. Combining initialization, real component builds and a later sync in one automated
+scenario remains in the review backlog.
