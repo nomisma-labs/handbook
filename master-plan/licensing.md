@@ -5,6 +5,11 @@ Decided 11 November 2026.
 Copyright belongs to **Alexey Tkachenko**. This document records the licensing policy from the
 [memorandum](../memorandum.md) for Nomisma components and their distributed products.
 
+The handbook itself is licensed under
+[Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/),
+except where otherwise noted; see its [license text](../LICENSE). The software repositories
+described here retain their own licenses under the policy below.
+
 ## Licensing hierarchy
 
 | Tier | Components | Distribution license |
@@ -25,22 +30,22 @@ their own notices until explicitly updated; changing this register does not reli
 
 | Repository or planned component | Distribution license | Scope |
 | --- | --- | --- |
+| [`cmake_template`](toolchain-layer.md#current-implementation-cmake_template) | **MIT** | Shared development and build tooling |
 | [`base`](core-layer.md#4-base-common-definitions) | **MIT** | Common definitions and utilities |
 | [`assembly`](core-layer.md#5-assembly--integration-framework) | **MIT** | Composition, relay and delegates |
 | [`json_config`](core-layer.md#json_config) | **MIT** | JSON configuration framework |
 | [`spd_logger`](core-layer.md#spd_logger) | **MIT** | General-purpose application logging |
+| [Planned performance measurement framework](core-layer.md#8-performance-measurement-framework) | **MIT** | General core measurement facilities; repository and API remain to be defined |
 | [`nom_core`](core-layer.md#nom_core-facade) | **MIT** | Core facade and reusable core integration |
 | [`toml_config`](core-layer.md#toml_config) | **MIT** | TOML configuration framework; outside `nom_core` |
 | [`yaml_config`](core-layer.md#yaml_config) | **MIT** | YAML configuration framework; outside `nom_core` |
-| [`trace_logger`](core-layer.md#trace_logger) | **Proprietary** | High-performance logging know-how; outside `nom_core` |
 | [`asio_comm`](service-layer.md#communication-asio_comm) | **Sustainable Use License 1.0** | Communication services and exchange-connectivity integration |
 | Planned `nom_services` | **Sustainable Use License 1.0** | Shared runtime and service integration; repository not yet created |
 | [`md_capture`](application-layer.md#market-data-capture--md_capture) | **Sustainable Use License 1.0** | Market-data capture workflows and domain policy |
+| [`trace_logger`](core-layer.md#trace_logger) | **Proprietary** | High-performance logging know-how; outside `nom_core` |
 | [Planned simulation platform](application-layer.md#components-and-current-status) | **Proprietary** | Trading workflows in a controlled simulation environment; repository not yet defined |
 | [Planned live trading platform](application-layer.md#components-and-current-status) | **Proprietary** | Live market data, strategy decisions and order execution; repository not yet defined |
 | [Planned backtester](application-layer.md#components-and-current-status) | **Proprietary** | Historical strategy evaluation and analysis; repository not yet defined |
-| [`cmake_template`](toolchain-layer.md#current-implementation-cmake_template) | **MIT** | Shared development and build tooling |
-| [Planned performance measurement framework](core-layer.md#8-performance-measurement-framework) | **MIT** | General core measurement facilities; repository and API remain to be defined |
 
 Future repositories need their own entry under this hierarchy. Unnamed future facilities do
 not yet have a repository-level license assignment.
