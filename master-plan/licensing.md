@@ -45,10 +45,6 @@ their own notices until explicitly updated; changing this register does not reli
 Future repositories need their own entry under this hierarchy. Unnamed future facilities do
 not yet have a repository-level license assignment.
 
-The listed MIT repositories and `asio_comm` have adopted their selected licenses.
-`md_capture` still retains proprietary notices; its SUL migration is deferred.
-`trace_logger` remains proprietary and is outside the current toolchain migration.
-
 ## MIT distributions
 
 MIT is the chosen open-source license. It permits broad reuse, modification and distribution,
