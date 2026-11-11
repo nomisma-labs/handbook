@@ -28,7 +28,7 @@ supplies the mechanisms they use; it does not choose their component sets or own
 
 ## Current implementation: cmake_template
 
-**License: Proprietary (private internal tooling).** See the [licensing plan](licensing.md).
+**License: MIT.** See the [licensing plan](licensing.md#shared-toolchain-licensing).
 
 `cmake_template` supplies a repository skeleton and a shared kit. The kit includes CMake helpers,
 presets, checks, CI workflows and documentation. New repositories receive copies of these files;
@@ -85,10 +85,11 @@ Local validation, hosted CI results and published images are separate evidence o
 Packaging mechanisms and generic access to private build dependencies belong here. Component
 repositories choose package contents and audience. The [memorandum](../memorandum.md) and
 [licensing plan](licensing.md) define MIT, SUL 1.0 and proprietary distribution. The
-template remains private and proprietary; a distributed component must provide the build
-support its audience needs. The redistribution scope and terms for copied kit files remain an
-[open distribution decision](licensing.md#open-distribution-decisions). Public CI images should
-contain public tools, while private dependency access is configured separately.
+template and copied kit use MIT, independently of the consuming project's license. One
+template supports all three project choices; initialization selects the project terms and
+synchronization preserves that selection. Distributions include the relevant project,
+toolchain and dependency notices. Public CI images should contain public tools, while private
+dependency access is configured separately.
 
 Cross-repository decisions and plans live in this handbook. Component APIs and operational
 guides live with their code. The toolchain supplies shared conventions and recipes, and

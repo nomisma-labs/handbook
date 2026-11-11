@@ -9,7 +9,7 @@ Copyright belongs to **Alexey Tkachenko**. This document records the licensing p
 
 | Tier | Components | Distribution license |
 | --- | --- | --- |
-| General low-level building blocks | Common types, composition, configuration, ordinary logging and general core integration | **MIT**, the default for the core layer |
+| General low-level building blocks | Common types, composition, configuration, ordinary logging, general core integration and shared toolchain infrastructure | **MIT**, the default for the core layer and `cmake_template` |
 | Domain knowledge | Repositories containing reusable domain models, workflows or domain-specific integration | **Sustainable Use License 1.0**, as source-available software |
 | Distinctive know-how | Components whose implementation embodies know-how retained privately, including `trace_logger` | **Proprietary** |
 
@@ -20,8 +20,8 @@ component's license; neither does being outside that facade.
 ## Repository license register
 
 These are the selected **distribution licenses** used in the repository descriptions throughout
-this master plan. The existing repositories currently retain proprietary `LICENSE` files;
-MIT and SUL 1.0 labels record the intended distribution terms, not completed relicensing.
+this master plan. Published revisions and existing checkouts retain the licenses recorded in
+their own notices until explicitly updated; changing this register does not relicense them.
 
 | Repository or planned component | Distribution license | Scope |
 | --- | --- | --- |
@@ -39,7 +39,7 @@ MIT and SUL 1.0 labels record the intended distribution terms, not completed rel
 | [Planned simulation platform](application-layer.md#components-and-current-status) | **Proprietary** | Trading workflows in a controlled simulation environment; repository not yet defined |
 | [Planned live trading platform](application-layer.md#components-and-current-status) | **Proprietary** | Live market data, strategy decisions and order execution; repository not yet defined |
 | [Planned backtester](application-layer.md#components-and-current-status) | **Proprietary** | Historical strategy evaluation and analysis; repository not yet defined |
-| [`cmake_template`](toolchain-layer.md#current-implementation-cmake_template) | **Proprietary** | Private development and build tooling |
+| [`cmake_template`](toolchain-layer.md#current-implementation-cmake_template) | **MIT** | Shared development and build tooling |
 | [Planned performance measurement framework](core-layer.md#8-performance-measurement-framework) | **MIT** | General core measurement facilities; repository and API remain to be defined |
 
 Future repositories need their own entry under this hierarchy. Unnamed future facilities do
@@ -80,6 +80,24 @@ third-party dependencies; a facade does not replace its dependencies' terms.
 The [packaging plan](wip/packaging.md) covers source, native and Python delivery formats.
 The license choice applies to the distributed component across those formats.
 
+## Shared toolchain licensing
+
+`cmake_template` and its shared kit use **MIT**. One template serves MIT, SUL 1.0 and
+proprietary projects. Copied toolchain and scaffold material retains its MIT notices, while
+each repository selects the terms for its own new code. Repository visibility is independent
+of that choice.
+
+Initialization makes the project license an explicit choice. Synchronization updates shared
+infrastructure and its MIT notice while preserving the project's license selection and
+repository-owned files. Generators and checks use the project selection; distributions retain
+the notices required by the material they include. The
+[creation guide](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/new_repo.md#licensing)
+documents the process and local validation without creating hosted test repositories.
+
+Adopting the MIT kit does not automatically relicense older template revisions, existing
+consumer code or third-party dependencies. Those notices and any intended migrations must be
+reviewed explicitly.
+
 ## Open distribution decisions
 
 - **General runtime services versus domain knowledge.** `asio_comm` and planned `nom_services`
@@ -87,8 +105,3 @@ The license choice applies to the distributed component across those formats.
   description of reusable low-level infrastructure. The plan needs a more precise boundary
   between MIT infrastructure and SUL domain integration, including whether a distribution
   separates those parts. The repository selections above remain in place pending that decision.
-- **Build support in distributed source.** Derived repositories contain copies of the proprietary
-  `cmake_template` kit. Decide which build-support files accompany MIT/SUL products and under
-  what terms, or provide alternative build support. Keeping the template repository private
-  does not define the redistribution terms of copies included with a product. This remains
-  part of preparing the delivered contents and notices described in the packaging plan.

@@ -7,8 +7,8 @@ This document records the ownership boundaries; the roadmaps cover the
 [application](application-layer.md) layers. Layer names describe responsibilities independently
 of the repositories that implement them. The [licensing plan](licensing.md) defines MIT,
 Sustainable Use License 1.0 and proprietary distribution independently of those boundaries.
-License labels below refer to the selected distribution terms; existing repository notices
-currently remain proprietary.
+License labels below refer to selected distribution terms. Published revisions and existing
+checkouts retain their recorded notices until explicitly updated.
 
 ## Layer dependencies
 
@@ -31,7 +31,7 @@ flowchart TD
 
 | Layer | Owns | Examples |
 | --- | --- | --- |
-| Toolchain | Repository setup, build and test infrastructure, development conventions, packaging, and shared-tool updates | `cmake_template` (**Proprietary**) and its synchronized kit |
+| Toolchain | Repository setup, build and test infrastructure, development conventions, packaging, and shared-tool updates | `cmake_template` (**MIT**) and its synchronized kit |
 | Core | Common definitions, component composition, configuration, logging, adapters and planned performance measurement | `base`, `assembly` and `nom_core` (**MIT**); planned shared logger-configuration mapping |
 | Service | Reusable runtime facilities provided to applications and integration between those facilities | `asio_comm` and planned `nom_services` (**SUL 1.0**); timers, execution, multithreading, simulation and application control |
 | Application | Selection and composition of services, domain behavior, configuration values, and operational policy | `md_capture` (**SUL 1.0**); planned simulation platform, live trading platform and backtester (**all Proprietary**) |

@@ -15,7 +15,7 @@
 ## Decisions
 
 - **Copyright:** copyright belongs to Alexey Tkachenko.
-- **License:** MIT for general low-level components, including the core libraries; Sustainable Use License 1.0 for repositories containing more domain knowledge; proprietary for distinctive know-how, including `trace_logger`, and private internal tooling. `trace_logger` is an explicit exception to the core layer's MIT default. Each distributed repository records its terms in `LICENSE`; see [licensing.md](master-plan/licensing.md).
+- **License:** MIT for general low-level components, including the core libraries and shared `cmake_template` toolchain; Sustainable Use License 1.0 for repositories containing more domain knowledge; proprietary for distinctive know-how, including `trace_logger`. `trace_logger` is an explicit exception to the core layer's MIT default. Each distributed repository records its terms in `LICENSE`; see [licensing.md](master-plan/licensing.md).
 - **SPDX:** copyright notices identify Alexey Tkachenko. Source license identifiers must match the actual license of the repository or distribution. Existing proprietary development sources use `SPDX-FileCopyrightText: 2026 Alexey Tkachenko` and `SPDX-License-Identifier: LicenseRef-Nomisma-Labs-Proprietary`; MIT distributions use `SPDX-License-Identifier: MIT`. SUL distributions must identify and include the selected Sustainable Use License 1.0 text.
 - **Hosting:** GitHub organization, private repositories by default, GitHub Actions for CI/CD; start on the Free plan.
 - **Language:** module-first C++, using the standard supported by the validated template toolchain. Adopt newer standards after validating the required compiler and library support. Use `nom` as the root namespace, component namespaces where useful, and standard-library-style `snake_case` naming.
@@ -32,13 +32,14 @@ versions here.
 
 | Layer | Responsibility | Components |
 | --- | --- | --- |
-| [Toolchain layer](master-plan/toolchain-layer.md) | Development, build, validation and delivery infrastructure for all code layers | `cmake_template` (**Proprietary**); the layer name is independent of its implementation. |
+| [Toolchain layer](master-plan/toolchain-layer.md) | Development, build, validation and delivery infrastructure for all code layers | `cmake_template` (**MIT**); the layer name is independent of its implementation. |
 | [Core layer](master-plan/core-layer.md) | Common definitions, composition, configuration, logging, adapters and planned performance measurement | `nom_core` integrates `base`, `assembly`, `json_config` and `spd_logger` (**all MIT**); `toml_config` and `yaml_config` (**MIT**), `trace_logger` (**Proprietary**) and planned performance measurement (**MIT**) remain outside the facade. |
 | [Service layer](master-plan/service-layer.md) | Reusable runtime services used by applications | `asio_comm` (**SUL 1.0**) is implemented, with further validation and feature work outstanding; `nom_services` (**SUL 1.0**) and multithreading facilities are planned. |
 | [Application layer](master-plan/application-layer.md) | Operational workflows composed from services | `md_capture` (**SUL 1.0**); planned simulation platform, live trading platform and backtester (**all Proprietary**). |
 
 The labels identify selected distribution licenses; SUL 1.0 means Sustainable Use License 1.0
-and is source available. Existing repository license notices currently remain proprietary.
+and is source available. Published revisions and existing checkouts retain their recorded
+notices until explicitly updated.
 Licensing follows each component's intended distribution
 and knowledge content, independently of its architectural layer. See the
 [repository license register](master-plan/licensing.md#repository-license-register).

@@ -11,7 +11,7 @@ records the selected MIT, SUL 1.0 and proprietary tiers; the
 ## Scope and ownership
 
 The toolchain layer, currently implemented by
-[cmake_template](https://github.com/nomisma-labs/cmake_template) (**Proprietary**), owns the build, dependency,
+[cmake_template](https://github.com/nomisma-labs/cmake_template) (**MIT**), owns the build, dependency,
 installation, packaging and validation mechanisms for every channel. Derived repositories
 choose their targets, dependencies, package contents and audience through that framework.
 Missing mechanisms are implemented and tested in the template before adoption elsewhere.
@@ -85,8 +85,9 @@ Sustainable Use License 1.0; distinctive know-how, including `trace_logger`, rem
 SUL products are source available. Private development material and internal tooling can remain
 outside the delivered product, whose license notices and metadata must match its chosen tier.
 Copyright belongs to Alexey Tkachenko. See the [licensing plan](../licensing.md) for scope.
-Source distributions also need an explicit selection and redistribution terms for the copied
-proprietary build kit; this is an [open distribution decision](../licensing.md#open-distribution-decisions).
+Copied toolchain material retains MIT independently of the project's selected terms. Source
+distributions and generated package metadata must retain the applicable MIT notices; see
+[shared toolchain licensing](../licensing.md#shared-toolchain-licensing).
 
 Artifact hosting, package indexes and publication credentials are release concerns. Native
 releases do not require a Python index; public Python releases may use PyPI. Publication
@@ -104,7 +105,8 @@ workflows and client variants remain to be defined.
   mechanisms without restoring examples. Record the toolchain and dependency versions tested.
 
 The template already supplies source/package consumers, module-package and runtime relocation
-fixtures, installed-wheel checks and sync regression coverage. Remaining work includes a combined
-initialization/update scenario, broader relocated-package coverage with `import std` and external
+fixtures, installed-wheel checks, sync regression coverage and local creation/build/sync checks
+for each project license. Remaining work includes installed-library consumption after
+initialization and an update, broader relocated-package coverage with `import std` and external
 dependencies, native release contents, and publication mechanics. Release automation must
 validate the delivered archives or packages.

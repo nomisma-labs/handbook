@@ -2,8 +2,8 @@
 
 Reviewed 11 November 2026.
 
-**Repository license: Proprietary.** `cmake_template` remains private internal tooling under
-the [licensing plan](../licensing.md).
+**Repository license: MIT.** The shared toolchain supports independently licensed projects
+under the [licensing plan](../licensing.md#shared-toolchain-licensing).
 
 This combines the starter-repository surveys into a short improvement backlog.
 [memorandum.md](../../memorandum.md) sets intent;
@@ -49,12 +49,16 @@ reasoning, optional testing tools, and template synchronization mechanics.
   only `ci`, plus quality and release-version checks. `clang`, `complete`, and Clang ASan/UBSan
   builds remain part of default local bootstrap validation.
 - The [template workflow](https://github.com/nomisma-labs/cmake_template/blob/master/.github/workflows/ci_template.yml)
-  checks native Python wheels and that template-owned files stay generic. It does not run a
-  renamed-repository initialization job.
+  checks native Python wheels and that template-owned files stay generic. Repository creation
+  is exercised by the license regression in the ordinary kit test suite.
 - [Template synchronization](https://github.com/nomisma-labs/cmake_template/blob/master/tools/kit/sync_template.py) replaces
   template-owned files and stages `.template_ref` with them. Its
   [regression test](https://github.com/nomisma-labs/cmake_template/blob/master/tests/kit/template_sync/check.py) covers
   updates, moves, deletions, local-edit refusal, explicit overwrite, and repeat updates.
+- Explicit license selection during initialization, project-aware generated notices, and MIT
+  notices retained on copied infrastructure. A local creation regression exercises MIT, SUL
+  and proprietary choices, builds a generated app, and verifies preservation through sync.
+  It uses disposable local repositories without creating hosted projects.
 
 ## Public examples worth using
 
@@ -83,7 +87,7 @@ mechanism; a dedicated diamond-and-override regression scenario remains useful.
 |---|---|---|
 | 1 | **Test shared dependencies and local overrides.** | Add a dedicated fixture where the top-level project selects one shared revision, it is configured once, and a local checkout can replace it. Preserve the existing defaults that disable dependency tests/apps. Declare shared dependencies with consistent names before `FetchContent_MakeAvailable` ([ordering rules](https://cmake.org/cmake/help/latest/module/FetchContent.html)). |
 | 1 | **Extend relocated-package coverage.** | The source-layout fixture already checks an importing consumer without the original source/build trees. Extend that pattern to the main example using `import std`, its third-party packages, and the complete exported dependency graph. |
-| 1 | **Test the full initialization/update workflow.** | Initialize a renamed repo, add a small library/app, then build/test/install and consume its package after a template update. Preserve project files and keep removed examples out. The isolated sync regression already covers conflict refusal, overwrite, staged `.template_ref`, and repeat updates; the combined lifecycle remains to be automated. Follow the [sync instructions](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/new_repo.md#keeping-repos-in-sync). |
+| 1 | **Extend initialization/update coverage to installed libraries.** | The local license regression initializes each choice, builds a generated app and verifies sync preservation. Extend it with a library, installation and independent package consumption after the update. Follow the [sync instructions](https://github.com/nomisma-labs/cmake_template/blob/master/docs/kit/new_repo.md#keeping-repos-in-sync). |
 | 1, when needed | **Support private dependency checkout in CI.** | The template documents GitHub App tokens, but its workflows currently use ordinary recursive checkout. Add scoped read-only token wiring and verify access to all required private submodules before relying on hosted builds. |
 | 2 | **Verify module interfaces and remaining public headers independently.** | Each public module builds and an importing consumer compiles. Separately compile each macro or dependency-boundary header to catch missing includes and accidental include-order requirements. `VERIFY_INTERFACE_HEADER_SETS` covers headers only; explicitly build `all_verify_interface_header_sets`, which is outside the default build ([CMake documentation](https://cmake.org/cmake/help/latest/prop_tgt/VERIFY_INTERFACE_HEADER_SETS.html)). |
 | 2 | **Broaden compiler warnings.** | Add small compiler-specific groups, evaluating flags such as `-Wshadow`, `-Wconversion`, and `-Wformat=2`. Apply them to owned targets without imposing warnings-as-errors on projects using the library. |
@@ -91,7 +95,8 @@ mechanism; a dedicated diamond-and-override regression scenario remains useful.
 | 2 | **Automate Actions updates.** | Add weekly reviewed Dependabot PRs for workflows and include its configuration in template synchronization. Assess submodule updates separately against release-pin policy and private-repo access. |
 
 Independent module/header compilation is a proposed C++ correctness check. The existing
-`tools/kit/checks/headers.py` checks SPDX license comments; it does not compile C++ headers or modules.
+`tools/kit/checks/headers.py` checks SPDX notices and the selected license policy; it does not
+compile C++ headers or modules.
 Bootstrap runs the existing checks; the remaining scenarios above need dedicated coverage.
 Track module and toolchain experiments in the [lab checklist](https://github.com/nomisma-labs/cmake_template/blob/master/docs/lab/README.md).
 

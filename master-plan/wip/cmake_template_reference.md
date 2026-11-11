@@ -2,8 +2,8 @@
 
 Reviewed 11 November 2026.
 
-**Repository license: Proprietary.** `cmake_template` remains private internal tooling under
-the [licensing plan](../licensing.md).
+**Repository license: MIT.** The shared toolchain supports independently licensed projects
+under the [licensing plan](../licensing.md#shared-toolchain-licensing).
 
 Supporting detail for the [improvement review](cmake_template.md). The review sets priorities;
 this note preserves examples and reasoning. Proposed tooling options below are candidates to evaluate,
@@ -115,5 +115,6 @@ and status commands. A comparable status check could identify local deviations b
 For Nomisma, it must account for intentional initializer removals. The current
 [sync regression](https://github.com/nomisma-labs/cmake_template/blob/master/tests/kit/template_sync/check.py) already checks
 conflict refusal, explicit overwrite, preserved repository files, staged changes and repeat
-updates. Combining initialization, real component builds and a later sync in one automated
-scenario remains in the review backlog.
+updates. The local license regression combines initialization, a generated app build and a
+later sync for MIT, SUL and proprietary projects, preserving their selected terms. Extending
+that scenario to installed-library consumption remains in the review backlog.
