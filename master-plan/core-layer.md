@@ -27,8 +27,8 @@ The table distinguishes facade membership, independently developed components an
 
 The [licensing policy](licensing.md) selects MIT for general core products, including the
 configuration alternatives and the `nom_core` facade. `trace_logger` remains proprietary as
-an explicit know-how exception. License labels describe the selected distribution terms;
-existing repository `LICENSE` files currently remain proprietary.
+an explicit know-how exception. The existing MIT core repositories now record these terms
+in their license notices; the performance measurement framework remains planned.
 Gray diagram styling indicates absence from `nom_core`, independently of licensing.
 
 Each trading system has a container repository that selects compatible component versions.

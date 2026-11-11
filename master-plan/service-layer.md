@@ -9,8 +9,8 @@ constraints and validation evidence live with their code.
 
 The selected distribution license for `asio_comm` and the planned `nom_services` repository is
 **Sustainable Use License 1.0 (SUL 1.0)**, under the [licensing plan](licensing.md).
-These are source-available distribution decisions; the current `asio_comm` repository still
-has proprietary license notices. Future service repositories need an explicit selection.
+`asio_comm` records these source-available terms in its repository notices; `nom_services`
+remains planned. Future service repositories need an explicit selection.
 
 ## Components and status
 
